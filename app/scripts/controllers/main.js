@@ -14,18 +14,52 @@ angular.module('frontApp')
             'AngularJS',
             'Karma'
         ];
-        $scope.names = {
-            "c1": "Constant 1",
-            "c2": "Constant 2",
-            "c3": "Constant 3",
-            "x1": "Variable 1",
-            "x2": "Variable 2",
-            "x3": "Variable 3",
-            "z": "Minimized"
+        $scope.minimum = 0;
+        $scope.minimums = "0";
+        $scope.variables = {
+            "c1": {
+                "name": "Constant 1",
+                "input":true,
+                "value": 1000000,
+                "slider": {
+                	"min":0,
+                	"max":1000000,
+                	"step":1000
+                }
+            },
+            "c2": {
+                "name": "Constant 2",
+                // "hide":true,
+                "input":true,
+                "value": 9800
+            },
+            "c3": {
+                "name": "Constant 3",
+                // "hide":true,
+                "input":true,
+                "value": 0
+            },
+            "x1": {
+                "name": "Variable 1",
+                "value": 0
+            },
+            "x2": {
+                "name": "Variable 2",
+                "value": 0
+            },
+            "x3": {
+                "name": "Variable 3",
+                "value": 0
+            },
+            "z": {
+                "name": "Minimized",
+                "value": 0
+            },
+            "months": {
+                "name": "Months worked in a year",
+                "value": 12
+            },
         }
-        $scope.c1 = 1000000;
-        $scope.c2 = 9800;
-        $scope.c3 = 0;
 
         $scope.find = function() {
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
@@ -35,16 +69,15 @@ angular.module('frontApp')
             solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.c1 - $scope.c2 - $scope.c3);
-            solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.c1 - $scope.c2 - $scope.c3);
+            solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+            solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
             var res = solver.solve()
 
-            $scope.x1 = res[0]
-            $scope.x2 = res[1]
-            $scope.x3 = res[2]
-            $scope.z = res[3]
-            console.log(res)
+            $scope.variables.x1.value = res[0]
+            $scope.variables.x2.value = res[1]
+            $scope.variables.x3.value = res[2]
+            $scope.variables.z.value = res[3]
         }
-        $scope.find();
+        // $scope.find();
 
     }]);

@@ -1,35 +1,13 @@
-<div>
-    <label for="usr">{{names.c1}}:</label>
-    <input type="text" class="form-control" ng-model="c1">
-  </div>
-  <div>
-    <label for="usr">{{names.c2}}:</label>
-    <input type="text" class="form-control" ng-model="c2">
-  </div>
-  <div>
-    <label for="usr">{{names.c3}}:</label>
-    <input type="text" class="form-control" ng-model="c3">
-  </div>
-  <div>
-    <label for="usr">{{names.x1}}:</label>
-    <input type="text" class="form-control" ng-model="x1">
-  </div>
-  <div>
-    <label for="usr">{{names.x2}}:</label>
-    <input type="text" class="form-control" ng-model="x2">
-  </div>
-  <div>
-    <label for="usr">{{names.x3}}:</label>
-    <input type="text" class="form-control" ng-model="x3">
-  </div>
-  <div>
-    <label for="usr">{{names.z}}:</label>
-    <input type="text" class="form-control" ng-model="z">
-  </div>
-  <div>
-    <button ng-click="find()">
-      Find
-    </button>
-  </div>
-
+<div ng-repeat="(key, variable) in variables">
+    <div ng-if="!variable.hide" layout="row">
+        <label class="flex-20">{{variable.name}}:</label>
+        <md-slider class="flex-60" ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
+        <input class="flex-20" ng-if="variable.input" type="text" class="form-control" ng-model="variable.value">
+        <span class="flex-20" ng-if="!variable.input" class="form-control">{{variable.value}}</span>
+    </div>
+</div>
+<button ng-click="find()">
+    Find
+</button>
+</div>
 </div>
