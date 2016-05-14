@@ -1,9 +1,14 @@
 <div ng-repeat="(key, variable) in variables">
-    <div ng-if="!variable.hide" layout="row">
-        <label class="flex-20">{{variable.name}}:</label>
-        <md-slider class="flex-60" ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
-        <input class="flex-20" ng-if="variable.input" type="text" class="form-control" ng-model="variable.value">
-        <span class="flex-20" ng-if="!variable.input" class="form-control">{{variable.value}}</span>
+    <div class="layout-row" ng-if="!variable.hide">
+        <div class="layout-align-center-center layout-row flex-20" flex="20" layout="" layout-align="center center">
+            <span class="md-body-1">{{variable.name}}</span>
+        </div>
+        <md-slider class="flex" ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
+
+        <div class="end layout-align-center-center layout-row flex-20" flex="20" layout="" layout-align="center center">
+            <input class="flex" ng-if="variable.input" type="text" ng-model="variable.value">
+            <span class="flex" ng-if="!variable.input" >{{variable.value}}</span>
+        </div>
     </div>
 </div>
 <button ng-click="find()">

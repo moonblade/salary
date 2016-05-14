@@ -56,7 +56,7 @@ angular.module('frontApp')
                 "value": 0
             },
             "months": {
-                "name": "Months worked in a year",
+                "name": "Months worked",
                 "value": 12
             },
         }
