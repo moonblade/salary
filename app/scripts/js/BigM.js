@@ -1,10 +1,11 @@
-var BigM = function (mode, f, debugContainer) {
-	this._f = f;
-	this._mode = mode;
-	this._numberOfColumnsToPivot = f.length;
-	this._debugContainer = debugContainer;
-	this._constraints = [];
-	this._matrix = null;
+var longConstant = 10;
+var BigM = function(mode, f, debugContainer) {
+    this._f = f;
+    this._mode = mode;
+    this._numberOfColumnsToPivot = f.length;
+    this._debugContainer = debugContainer;
+    this._constraints = [];
+    this._matrix = null;
 };
 
 BigM.MINIMIZE = 0;
@@ -14,323 +15,330 @@ BigM.EQUALS = 0;
 BigM.LOWER_OR_EQUAL_THAN = 1;
 BigM.GREATER_OR_EQUAL_THAN = 2;
 
-BigM.prototype.addConstraint = function (expression, operator, value) {
-	this._constraints.push([expression, operator, value]);
 
-	if (operator != BigM.EQUALS) {
-		++this._numberOfColumnsToPivot;
-	}
+BigM.prototype.addConstraint = function(expression, operator, value) {
+    this._constraints.push([expression, operator, value]);
+
+    if (operator != BigM.EQUALS) {
+        ++this._numberOfColumnsToPivot;
+    }
 }
 
-BigM.prototype.solve = function () {
-	this._matrix = [];
-	this._matrix[0] = [[1, 0]];		// The first row is composed by vectors. Each cell is a 2D vector that represents a + bM
+BigM.prototype.solve = function() {
+    this._matrix = [];
+    this._matrix[0] = [
+        [1, 0]
+    ]; // The first row is composed by vectors. Each cell is a 2D vector that represents a + bM
 
-	for (var i = 0; i < this._f.length; ++i) {
-		var totalM = 0;
 
-		for (var j = 0; j < this._constraints.length; ++j) {
-			if (this._constraints[j][1] != BigM.LOWER_OR_EQUAL_THAN) {
-				totalM += this._constraints[j][0][i];
-			}
-		}
+    for (var i = 0; i < this._f.length; ++i) {
+        var totalM = 0;
 
-		if (this._mode == BigM.MAXIMIZE) {
-			totalM = -totalM;
-		}
+        for (var j = 0; j < this._constraints.length; ++j) {
+            if (this._constraints[j][1] != BigM.LOWER_OR_EQUAL_THAN) {
+                totalM += this._constraints[j][0][i];
+            }
+        }
 
-		this._matrix[0].push([-this._f[i], totalM]);
-	}
+        if (this._mode == BigM.MAXIMIZE) {
+            totalM = -totalM;
+        }
 
-	var rhs = 0;
+        this._matrix[0].push([-this._f[i], totalM]);
+    }
 
-	for (var i = 0; i < this._constraints.length; ++i) {
-		if (this._constraints[i][1] == BigM.GREATER_OR_EQUAL_THAN) {
-			if (this._mode == BigM.MINIMIZE) {
-				this._matrix[0].push([0, -1]);
-			}
-			else {
-				this._matrix[0].push([0, 1]);
-			}
-		}
-		else {
-			this._matrix[0].push([0, 0]);
-		}
+    var rhs = 0;
 
-		if (this._constraints[i][1] != BigM.LOWER_OR_EQUAL_THAN) {
-			rhs += this._constraints[i][2];
-		}
-	}
+    for (var i = 0; i < this._constraints.length; ++i) {
+        if (this._constraints[i][1] == BigM.GREATER_OR_EQUAL_THAN) {
+            if (this._mode == BigM.MINIMIZE) {
+                this._matrix[0].push([0, -1]);
+            } else {
+                this._matrix[0].push([0, 1]);
+            }
+        } else {
+            this._matrix[0].push([0, 0]);
+        }
 
-	for (var i = 0; i < this._constraints.length; ++i) {
-		this._matrix[0].push([0, 0]);
-	}
+        if (this._constraints[i][1] != BigM.LOWER_OR_EQUAL_THAN) {
+            rhs += this._constraints[i][2];
+        }
+    }
 
-	if (this._mode == BigM.MAXIMIZE) {
-		rhs = -rhs;
-	}
+    for (var i = 0; i < this._constraints.length; ++i) {
+        this._matrix[0].push([0, 0]);
+    }
 
-	this._matrix[0].push([0, rhs]);
+    if (this._mode == BigM.MAXIMIZE) {
+        rhs = -rhs;
+    }
 
-	for (var i = 0; i < this._constraints.length; ++i) {
-		this._matrix.push([0].concat(this._constraints[i][0]));
-		var vars = [];
-		var artificialVars = [];
+    this._matrix[0].push([0, rhs]);
 
-		for (var j = 0; j < this._constraints.length; ++j) {
-			vars.push(0);
-			artificialVars.push(0);
-		}
+    for (var i = 0; i < this._constraints.length; ++i) {
+        this._matrix.push([0].concat(this._constraints[i][0]));
+        var vars = [];
+        var artificialVars = [];
 
-		if (this._constraints[i][1] == BigM.GREATER_OR_EQUAL_THAN) {
-			vars[i] = -1;
-		}
-		else if (this._constraints[i][1] == BigM.LOWER_OR_EQUAL_THAN) {
-			vars[i] = 1;
-		}
+        for (var j = 0; j < this._constraints.length; ++j) {
+            vars.push(0);
+            artificialVars.push(0);
+        }
 
-		if (this._constraints[i][1] != BigM.LOWER_OR_EQUAL_THAN) {
-			artificialVars[i] = 1;
-		}
+        if (this._constraints[i][1] == BigM.GREATER_OR_EQUAL_THAN) {
+            vars[i] = -1;
+        } else if (this._constraints[i][1] == BigM.LOWER_OR_EQUAL_THAN) {
+            vars[i] = 1;
+        }
 
-		this._matrix[i + 1] = this._matrix[i + 1].concat(vars).concat(artificialVars);
-		this._matrix[i + 1].push(this._constraints[i][2]);
-	}
+        if (this._constraints[i][1] != BigM.LOWER_OR_EQUAL_THAN) {
+            artificialVars[i] = 1;
+        }
 
-	this._display();
+        this._matrix[i + 1] = this._matrix[i + 1].concat(vars).concat(artificialVars);
+        this._matrix[i + 1].push(this._constraints[i][2]);
+    }
 
-	while (!this._isSolved()) {
-		var c = this._getColumnToPivot();
-		var r = this._getRowToPivot(c);
-		this._pivot(r, c);
-		this._display();
-	}
+    this._display();
 
-	// Rounding.
+    while (!this._isSolved()) {
+        var c = this._getColumnToPivot();
+        var r = this._getRowToPivot(c);
+        if(!this._pivot(r, c)){
+        	solution = []
+        	for(var i=0;i<longConstant;++i)
+        		solution.push(0)
+        	return solution;
+        }
+        this._display();
+    }
 
-	for (var i = 0; i < this._matrix.length; ++i) {
-		for (var j = 0; j < this._matrix[i].length; ++j) {
-			if (i == 0) {
-				this._matrix[i][j][0] = Math.round(1000 * this._matrix[i][j][0]) / 1000;
-				this._matrix[i][j][1] = Math.round(1000 * this._matrix[i][j][1]) / 1000;
-			}
-			else {
-				this._matrix[i][j] = Math.round(1000 * this._matrix[i][j]) / 1000;
-			}
-		}
-	}
+    // Rounding.
 
-	this._debug('Rounding');
-	this._display();
+    for (var i = 0; i < this._matrix.length; ++i) {
+        for (var j = 0; j < this._matrix[i].length; ++j) {
+            if (i == 0) {
+                this._matrix[i][j][0] = Math.round(1000 * this._matrix[i][j][0]) / 1000;
+                this._matrix[i][j][1] = Math.round(1000 * this._matrix[i][j][1]) / 1000;
+            } else {
+                this._matrix[i][j] = Math.round(1000 * this._matrix[i][j]) / 1000;
+            }
+        }
+    }
 
-	// Solution
-	var solution = [];
+    this._debug('Rounding');
+    this._display();
 
-	for (var i = 1; i < this._f.length + 1; ++i) {
-		var value = NaN;
-		var pivoted = true;
+    // Solution
+    var solution = [];
 
-		for (var j = 0; j < this._matrix.length && pivoted; ++j) {
-			if (isNaN(value) && j != 0 && this._matrix[j][i] == 1) {
-				value = this._matrix[j][this._matrix[j].length - 1];
-			}
-			else if (j == 0) {
-				if (this._matrix[j][i][0] != 0 || this._matrix[j][i][1] != 0) {
-					pivoted = false;
-				}
-			}
-			else if (this._matrix[j][i] != 0) {
-				pivoted = false;
-			}
-		}
+    for (var i = 1; i < this._f.length + 1; ++i) {
+        var value = NaN;
+        var pivoted = true;
 
-		if (pivoted && !isNaN(value)) {
-			solution.push(value);
-		}
-		else {
-			solution.push(0);
-		}
-	}
+        for (var j = 0; j < this._matrix.length && pivoted; ++j) {
+            if (isNaN(value) && j != 0 && this._matrix[j][i] == 1) {
+                value = this._matrix[j][this._matrix[j].length - 1];
+            } else if (j == 0) {
+                if (this._matrix[j][i][0] != 0 || this._matrix[j][i][1] != 0) {
+                    pivoted = false;
+                }
+            } else if (this._matrix[j][i] != 0) {
+                pivoted = false;
+            }
+        }
 
-	this._debug('Solution: [' + solution.join(', ') + ']');
-	return solution;
+        if (pivoted && !isNaN(value)) {
+            solution.push(value);
+        } else {
+            solution.push(0);
+        }
+    }
+
+    this._debug('Solution: [' + solution.join(', ') + ']');
+    return solution;
 }
 
-BigM.prototype._isSolved = function () {
-	for (var i = 1; i < this._numberOfColumnsToPivot + 1; ++i) {
-		if (this._mode == BigM.MINIMIZE) {
-			if (this._matrix[0][i][1] > 0 || (this._matrix[0][i][1] == 0 && this._matrix[0][i][0] > 0)) {
-				return false;
-			}
-		}
-		else if (this._matrix[0][i][1] > 0 || (this._matrix[0][i][1] == 0 && this._matrix[0][i][0] < 0)) {
-			return false;
-		}
-	}
+BigM.prototype._isSolved = function() {
+    for (var i = 1; i < this._numberOfColumnsToPivot + 1; ++i) {
+        if (this._mode == BigM.MINIMIZE) {
+            if (this._matrix[0][i][1] > 0 || (this._matrix[0][i][1] == 0 && this._matrix[0][i][0] > 0)) {
+                return false;
+            }
+        } else if (this._matrix[0][i][1] > 0 || (this._matrix[0][i][1] == 0 && this._matrix[0][i][0] < 0)) {
+            return false;
+        }
+    }
 
-	return true;
+    return true;
 }
 
-BigM.prototype._getColumnToPivot = function () {
-	// For minimizations, the choosen column has the most positive indicator. M is a large positive value.
-	// For maximizations, the choosen column has the most negative indicator. M is a large positive value.
+BigM.prototype._getColumnToPivot = function() {
+    // For minimizations, the choosen column has the most positive indicator. M is a large positive value.
+    // For maximizations, the choosen column has the most negative indicator. M is a large positive value.
 
-	var index = 1;
+    var index = 1;
 
-	for (var i = 2; i < this._numberOfColumnsToPivot + 1; ++i) {
-		if (this._mode == BigM.MINIMIZE) {
-			if (this._matrix[0][i][1] == this._matrix[0][index][1]) {
-				if (this._matrix[0][i][0] > this._matrix[0][index][0]) {
-					index = i;
-				}
-			}
-			else if (this._matrix[0][i][1] > this._matrix[0][index][1]) {
-				index = i;
-			}
-		}
-		else if (this._matrix[0][i][1] == this._matrix[0][index][1]) {
-			if (this._matrix[0][i][0] < this._matrix[0][index][0]) {
-				index = i;
-			}
-		}
-		else if (this._matrix[0][i][1] < this._matrix[0][index][1]) {
-			index = i;
-		}
-	}
+    for (var i = 2; i < this._numberOfColumnsToPivot + 1; ++i) {
+        if (this._mode == BigM.MINIMIZE) {
+            if (this._matrix[0][i][1] == this._matrix[0][index][1]) {
+                if (this._matrix[0][i][0] > this._matrix[0][index][0]) {
+                    index = i;
+                }
+            } else if (this._matrix[0][i][1] > this._matrix[0][index][1]) {
+                index = i;
+            }
+        } else if (this._matrix[0][i][1] == this._matrix[0][index][1]) {
+            if (this._matrix[0][i][0] < this._matrix[0][index][0]) {
+                index = i;
+            }
+        } else if (this._matrix[0][i][1] < this._matrix[0][index][1]) {
+            index = i;
+        }
+    }
 
-	return index;
+    return index;
 }
 
-BigM.prototype._getRowToPivot = function (col) {
-	var minIndex = -1;
-	var minRatio = -1;
+BigM.prototype._getRowToPivot = function(col) {
+    var minIndex = -1;
+    var minRatio = -1;
 
-	for (var i = 1; i < this._matrix.length; ++i) {
-		if (this._matrix[i][col] != 0) {
-			var ratio = this._matrix[i][this._matrix[i].length - 1] / this._matrix[i][col];
+    for (var i = 1; i < this._matrix.length; ++i) {
+        if (this._matrix[i][col] != 0) {
+            var ratio = this._matrix[i][this._matrix[i].length - 1] / this._matrix[i][col];
 
-			if ((ratio > 0 || (ratio == 0 && this._matrix[i][col] > 0)) && (ratio < minRatio || minRatio == -1)) {
-				minIndex = i;
-				minRatio = ratio;
-			}
-		}
-	}
+            if ((ratio > 0 || (ratio == 0 && this._matrix[i][col] > 0)) && (ratio < minRatio || minRatio == -1)) {
+                minIndex = i;
+                minRatio = ratio;
+            }
+        }
+    }
 
-	return minIndex;
+    return minIndex;
 }
 
-BigM.prototype._pivot = function (row, col) {
-	this._debug('Pivoting row ' + row + ', column ' + col);
+BigM.last = {}
+BigM.prototype._pivot = function(row, col) {
+    this._debug('Pivoting row ' + row + ', column ' + col);
+    if ((row < 0 || row < 0) || (row == BigM.last.row && row == BigM.last.row)) {
+        console.log("forced quit");
+		BigM.last = {}
+        return false;
+    }
+    BigM.last.row = row;
+    BigM.last.col = col;
 
-	if (this._matrix[row][col] != 1) {
-		var originalValue = this._matrix[row][col];
+    if (this._matrix[row][col] != 1) {
+        var originalValue = this._matrix[row][col];
 
-		for (var i = 0; i < this._matrix[row].length; ++i) {
-			this._matrix[row][i] /= originalValue;
-		}
-	}
+        for (var i = 0; i < this._matrix[row].length; ++i) {
+            this._matrix[row][i] /= originalValue;
+        }
+    }
 
-	for (var i = 0; i < this._matrix.length; ++i) {
-		if (i != row) {
-			var originalValue = (i == 0) ? [this._matrix[i][col][0], this._matrix[i][col][1]] : this._matrix[i][col];
+    for (var i = 0; i < this._matrix.length; ++i) {
+        if (i != row) {
+            var originalValue = (i == 0) ? [this._matrix[i][col][0], this._matrix[i][col][1]] : this._matrix[i][col];
 
-			for (var j = 0; j < this._matrix[i].length; ++j) {
-				if (i == 0) {
-					this._matrix[i][j][0] = this._zeroRound(this._matrix[i][j][0] - originalValue[0] * this._matrix[row][j]);
-					this._matrix[i][j][1] = this._zeroRound(this._matrix[i][j][1] - originalValue[1] * this._matrix[row][j]);
-				}
-				else {
-					this._matrix[i][j] = this._zeroRound(this._matrix[i][j] - originalValue * this._matrix[row][j]);
-				}
-			}
-		}
-	}
+            for (var j = 0; j < this._matrix[i].length; ++j) {
+                if (i == 0) {
+                    this._matrix[i][j][0] = this._zeroRound(this._matrix[i][j][0] - originalValue[0] * this._matrix[row][j]);
+                    this._matrix[i][j][1] = this._zeroRound(this._matrix[i][j][1] - originalValue[1] * this._matrix[row][j]);
+                } else {
+                    this._matrix[i][j] = this._zeroRound(this._matrix[i][j] - originalValue * this._matrix[row][j]);
+                }
+            }
+        }
+    }
+    return true;
 }
 
-BigM.prototype._zeroRound = function (a) {
-	if (a > -1e-10 && a < 1e-10) {
-		return 0;
-	}
+BigM.prototype._zeroRound = function(a) {
+    if (a > -1e-10 && a < 1e-10) {
+        return 0;
+    }
 
-	return a;
+    return a;
 }
 
-BigM.prototype._debug = function (msg) {
-	if (this._debugContainer != null) {
-		var p = document.createElement('p');
-		p.appendChild(document.createTextNode(msg));
-		this._debugContainer.appendChild(p);
-	}
+BigM.prototype._debug = function(msg) {
+    if (this._debugContainer != null) {
+        var p = document.createElement('p');
+        p.appendChild(document.createTextNode(msg));
+        this._debugContainer.appendChild(p);
+    }
+    console.log(msg);
 }
 
-BigM.prototype._display = function () {
-	if (this._debugContainer != null) {
-		var table = document.createElement('table');
-		table.setAttribute('border', 1);
+BigM.prototype._display = function() {
+    if (this._debugContainer != null) {
+        var table = document.createElement('table');
+        table.setAttribute('border', 1);
 
-		// Headers
-		var header = document.createElement('thead');
-		var headerInnerHTML = '<th>I</th>';
+        // Headers
+        var header = document.createElement('thead');
+        var headerInnerHTML = '<th>I</th>';
 
-		for (var i = 0; i < this._f.length; ++i) {
-			headerInnerHTML += '<th>x<sub>' + (i + 1) + '</sub></th>';
-		}
+        for (var i = 0; i < this._f.length; ++i) {
+            headerInnerHTML += '<th>x<sub>' + (i + 1) + '</sub></th>';
+        }
 
-		for (var i = 0; i < this._constraints.length; ++i) {
-			headerInnerHTML += '<th>s<sub>' + (i + 1) + '</sub></th>';
-		}
+        for (var i = 0; i < this._constraints.length; ++i) {
+            headerInnerHTML += '<th>s<sub>' + (i + 1) + '</sub></th>';
+        }
 
-		for (var i = 0; i < this._constraints.length; ++i) {
-			headerInnerHTML += '<th>a<sub>' + (i + 1) + '</sub></th>';
-		}
+        for (var i = 0; i < this._constraints.length; ++i) {
+            headerInnerHTML += '<th>a<sub>' + (i + 1) + '</sub></th>';
+        }
 
-		headerInnerHTML += '<th>RHS</th>';
-		header.innerHTML = headerInnerHTML;
-		table.appendChild(header);
+        headerInnerHTML += '<th>RHS</th>';
+        header.innerHTML = headerInnerHTML;
+        table.appendChild(header);
 
-		// Body
-		var body = document.createElement('tbody');
+        // Body
+        var body = document.createElement('tbody');
 
-		for (var i = 0; i < this._matrix.length; ++i) {
-			var row = document.createElement('tr');
+        for (var i = 0; i < this._matrix.length; ++i) {
+            var row = document.createElement('tr');
 
-			for (var j = 0; j < this._matrix[i].length; ++j) {
-				if (i == 0) {
-					var cell = '<td>';
+            for (var j = 0; j < this._matrix[i].length; ++j) {
+                if (i == 0) {
+                    var cell = '<td>';
 
-					if (this._matrix[i][j][0] != 0) {
-						cell += this._matrix[i][j][0];
-					}
+                    if (this._matrix[i][j][0] != 0) {
+                        cell += this._matrix[i][j][0];
+                    }
 
-					if (this._matrix[i][j][1] != 0) {
-						if (this._matrix[i][j][1] >= 0 && this._matrix[i][j][0] != 0) {
-							cell += '+';
-						}
+                    if (this._matrix[i][j][1] != 0) {
+                        if (this._matrix[i][j][1] >= 0 && this._matrix[i][j][0] != 0) {
+                            cell += '+';
+                        }
 
-						if (this._matrix[i][j][1] != 1) {
-							cell += (this._matrix[i][j][1] != -1) ? this._matrix[i][j][1] : '-';
-						}
+                        if (this._matrix[i][j][1] != 1) {
+                            cell += (this._matrix[i][j][1] != -1) ? this._matrix[i][j][1] : '-';
+                        }
 
-						cell += '<b>M</b>';
-					}
+                        cell += '<b>M</b>';
+                    }
 
-					if (this._matrix[i][j][0] == 0 && this._matrix[i][j][1] == 0) {
-						cell += '0';
-					}
+                    if (this._matrix[i][j][0] == 0 && this._matrix[i][j][1] == 0) {
+                        cell += '0';
+                    }
 
-					cell += '</td>';
-					row.innerHTML += cell;
-				}
-				else {
-					row.innerHTML += '<td>' + this._matrix[i][j] + '</td>';
-				}
-			}
+                    cell += '</td>';
+                    row.innerHTML += cell;
+                } else {
+                    row.innerHTML += '<td>' + this._matrix[i][j] + '</td>';
+                }
+            }
 
-			body.appendChild(row);
-		}
+            body.appendChild(row);
+        }
 
-		table.appendChild(body);
-		this._debugContainer.appendChild(table);
-	}
+        table.appendChild(body);
+        this._debugContainer.appendChild(table);
+    }
 }
 
+// module.exports = BigM
