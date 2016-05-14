@@ -19,25 +19,35 @@ angular.module('frontApp')
         $scope.variables = {
             "c1": {
                 "name": "Constant 1",
-                "input":true,
+                "input": true,
                 "value": 1000000,
                 "slider": {
-                	"min":0,
-                	"max":1000000,
-                	"step":1000
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
                 }
             },
             "c2": {
                 "name": "Constant 2",
                 // "hide":true,
-                "input":true,
-                "value": 9800
+                "input": true,
+                "value": 9800,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
             },
             "c3": {
                 "name": "Constant 3",
                 // "hide":true,
-                "input":true,
-                "value": 0
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
             },
             "x1": {
                 "name": "Variable 1",
@@ -78,6 +88,6 @@ angular.module('frontApp')
             $scope.variables.x3.value = res[2]
             $scope.variables.z.value = res[3]
         }
-        // $scope.find();
+        $scope.find();
 
     }]);

@@ -6,13 +6,10 @@
         <md-slider class="flex" ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" ng-change="find()" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
 
         <div class="layout-align-center-center layout-row flex-20" flex="20" layout="" layout-align="center center">
-            <input class="flex" ng-if="variable.input" type="text" ng-model="variable.value">
+            <input class="flex" ng-change="find()" ng-if="variable.input" type="text" ng-model="variable.value">
             <span class="flex" ng-if="!variable.input" >{{variable.value}}</span>
         </div>
     </div>
 </div>
-<button ng-click="find()">
-    Find
-</button>
 </div>
 </div>
