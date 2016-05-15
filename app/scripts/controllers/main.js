@@ -14,11 +14,9 @@ angular.module('frontApp')
             'AngularJS',
             'Karma'
         ];
-        $scope.minimum = 0;
-        $scope.minimums = "0";
         $scope.variables = {
             "c1": {
-                "name": "Constant 1",
+                "name": "CTC/Total Salary",
                 "input": true,
                 "value": 1000000,
                 "slider": {
@@ -27,16 +25,94 @@ angular.module('frontApp')
                     "step": 1000
                 }
             },
-            "c2": {
-                "name": "Constant 2",
-                // "hide":true,
+            "months": {
+                "name": "Months Worked",
                 "input": true,
-                "value": 9800,
+                "value": 12,
                 "slider": {
                     "min": 0,
-                    "max": 1000000,
-                    "step": 1000
+                    "max": 12,
+                    "step": 1
                 }
+            },
+            "ma": {
+                "name": "Medical Allowance",
+                "input": true,
+                "value": 15000,
+                "slider": {
+                    "min": 0,
+                    "max": 15000,
+                    "step": 100
+                }
+            },
+            "meal": {
+                "name": "Meal Allowance",
+                "input": true,
+                "value": 12050,
+                "slider": {
+                    "min": 0,
+                    "max": 12050,
+                    "step": 50
+                }
+            },
+            "cea": {
+                "name": "CEA",
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 2400,
+                    "step": 1200
+                }
+            },
+            "lta": {
+                "name": "LTA",
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 20000,
+                    "step": 100
+                },
+                "selector": {
+                	"prompt":"number of people",
+                    "value": 1,
+                    "options": [{
+                        "text": "1",
+                        "value": 1
+                    }, {
+                        "text": "2",
+                        "value": 2
+                    }, {
+                        "text": "3",
+                        "value": 3
+                    }, {
+                        "text": "4",
+                        "value": 4
+                    }, ]
+                }
+            },
+            "ca": {
+                "name": "Coveyance Allowance",
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 1600 * 12,
+                    "step": 100
+                }
+            },
+            "residence": {
+                "hide": true,
+                "name": "Residance",
+                "selector": {
+                    "options": ["Rental", ""]
+                },
+            },
+            "c2": {
+                "name": "Constant 2",
+                "hide": true,
+                "value": 0,
             },
             "c3": {
                 "name": "Constant 3",
@@ -50,44 +126,96 @@ angular.module('frontApp')
                 }
             },
             "x1": {
-                "name": "Variable 1",
-                "value": 0
+                "name": "Basic Salary",
+                "value": 0,
+                "input": true,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
             },
             "x2": {
-                "name": "Variable 2",
-                "value": 0
+                "name": "House Rental Allowance",
+                "value": 0,
+                "input": true,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
             },
             "x3": {
-                "name": "Variable 3",
-                "value": 0
+                "name": "Rental Paid Annually",
+                "value": 0,
+                "input": true,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
             },
             "z": {
-                "name": "Minimized",
+                "name": "HRA",
                 "value": 0
             },
-            "months": {
-                "name": "Months worked",
-                "value": 12
-            },
         }
-
-        $scope.find = function() {
-            var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
-            solver.addConstraint([1, 0, 0, 0], BigM.GREATER_OR_EQUAL_THAN, 150000);
-            solver.addConstraint([0, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, 290400);
-            solver.addConstraint([0, 0, 1, 0], BigM.LOWER_OR_EQUAL_THAN, 150000);
-            solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-            solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-            var res = solver.solve()
-
-            $scope.variables.x1.value = res[0]
-            $scope.variables.x2.value = res[1]
-            $scope.variables.x3.value = res[2]
-            $scope.variables.z.value = res[3]
+        var setMaxLTA = function() {
+    	if($scope.variables.c1.value>600000)
+        			$scope.variables.lta.slider.max=20000*$scope.variables.lta.selector.value;
+        		else
+        			$scope.variables.lta.slider.max=7550*$scope.variables.lta.selector.value;
+    	
         }
-        $scope.find();
+		setMaxLTA();
+
+        $scope.find = function(key, variable) {
+        	if(key=="c1") {
+        		setMaxLTA();
+        		$scope.variables.lta.value=Math.min((10.7*variable.value*5)/(100*12),$scope.variables.lta.slider.max);
+        	}
+            if (key == "lta") {
+            	setMaxLTA();
+        		$scope.variables.lta.value=Math.min($scope.variables.lta.slider.max,$scope.variables.lta.value);
+
+        		
+            }
+            if (key == "months") {
+                $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
+                $scope.variables.ca.value = Math.min($scope.variables.ca.slider.max, $scope.variables.ca.value);
+            }
+            if (key == "x2") {
+                $scope.variables.x1.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value;
+                // $scope.variables.x1.value = Math.min($scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value, $scope.variables.x1.slider.max);
+            }
+            if (key == "x1") {
+                $scope.variables.x2.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value;
+                // $scope.variables.x2.value = Math.min($scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value, $scope.variables.x2.slider.max);
+            }
+
+            if (!(key == "x1" || key == "x2" || key == "x3")) {
+                $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
+                var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
+                solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                var res = solver.solve()
+
+                $scope.variables.x1.slider.max = res[0]
+                $scope.variables.x1.value = res[0]
+                $scope.variables.x2.slider.max = res[1]
+                $scope.variables.x2.value = res[1]
+                $scope.variables.x3.slider.max = res[2]
+                $scope.variables.x3.value = res[2]
+                $scope.variables.z.value = res[3]
+            } else {
+                $scope.variables.z.value = Math.min($scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value)
+
+            }
+
+        }
+        $scope.find("c1", $scope.variables.c1);
 
     }]);

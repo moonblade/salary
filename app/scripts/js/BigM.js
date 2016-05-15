@@ -268,7 +268,7 @@ BigM.prototype._debug = function(msg) {
         p.appendChild(document.createTextNode(msg));
         this._debugContainer.appendChild(p);
     }
-    console.log(msg);
+    // console.log(msg);
 }
 
 BigM.prototype._display = function() {
