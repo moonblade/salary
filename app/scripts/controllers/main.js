@@ -94,7 +94,7 @@ angular.module('frontApp')
                 "slider": {
                     "min": 0,
                     "max": 1600 * 12,
-                    "step": 16
+                    "step": 100
                 }
             },
             "da": {
@@ -182,6 +182,7 @@ angular.module('frontApp')
                 $scope.variables.lta.slider.max = 7550 * $scope.variables.lta.selector.value;
         }
         setMaxLTA();
+        window.scope = $scope
 
         $scope.variables['blank'] = null
 
@@ -198,7 +199,7 @@ angular.module('frontApp')
             if (key == "months") {
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
                 // $scope.variables.ca.value = Math.min($scope.variables.ca.slider.max, $scope.variables.ca.value);
-                $scope.variables.ca.value = $scope.variables.months.value * 1600;
+                $scope.variables.ca.value = $scope.variables.ca.slider.max;
             }
             if (key == "x2") {
                 $scope.variables.x1.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value;
