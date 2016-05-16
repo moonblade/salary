@@ -9,11 +9,6 @@
  */
 angular.module('frontApp')
     .controller('MainCtrl', ['$scope', function($scope) {
-        this.awesomeThings = [
-            'HTML5 Boilerplate',
-            'AngularJS',
-            'Karma'
-        ];
         $scope.variables = {
             "c1": {
                 "name": "CTC/Total Salary",
@@ -75,7 +70,7 @@ angular.module('frontApp')
                     "step": 100
                 },
                 "selector": {
-                	"prompt":"number of people",
+                    "prompt": "number of people",
                     "value": 1,
                     "options": [{
                         "text": "1",
@@ -95,11 +90,31 @@ angular.module('frontApp')
             "ca": {
                 "name": "Coveyance Allowance",
                 "input": true,
-                "value": 0,
+                "value": 19200,
                 "slider": {
                     "min": 0,
                     "max": 1600 * 12,
-                    "step": 100
+                    "step": 16
+                }
+            },
+            "da": {
+                "name": "Darness Allowance",
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
+                }
+            },
+            "fc": {
+                "name": "Fixed Commission on turnover",
+                "input": true,
+                "value": 0,
+                "slider": {
+                    "min": 0,
+                    "max": 1000000,
+                    "step": 1000
                 }
             },
             "residence": {
@@ -116,7 +131,7 @@ angular.module('frontApp')
             },
             "c3": {
                 "name": "Constant 3",
-                // "hide":true,
+                "hide": true,
                 "input": true,
                 "value": 0,
                 "slider": {
@@ -161,28 +176,29 @@ angular.module('frontApp')
             },
         }
         var setMaxLTA = function() {
-    	if($scope.variables.c1.value>600000)
-        			$scope.variables.lta.slider.max=20000*$scope.variables.lta.selector.value;
-        		else
-        			$scope.variables.lta.slider.max=7550*$scope.variables.lta.selector.value;
-    	
+            if ($scope.variables.c1.value > 600000)
+                $scope.variables.lta.slider.max = 20000 * $scope.variables.lta.selector.value;
+            else
+                $scope.variables.lta.slider.max = 7550 * $scope.variables.lta.selector.value;
         }
-		setMaxLTA();
+        setMaxLTA();
+
+        $scope.variables['blank'] = null
 
         $scope.find = function(key, variable) {
-        	if(key=="c1") {
-        		setMaxLTA();
-        		$scope.variables.lta.value=Math.min((10.7*variable.value*5)/(100*12),$scope.variables.lta.slider.max);
-        	}
+            console.log($scope.variables)
+            if (key == "c1") {
+                setMaxLTA();
+                $scope.variables.lta.value = Math.min((10.7 * variable.value * 5) / (100 * 12), $scope.variables.lta.slider.max);
+            }
             if (key == "lta") {
-            	setMaxLTA();
-        		$scope.variables.lta.value=Math.min($scope.variables.lta.slider.max,$scope.variables.lta.value);
-
-        		
+                setMaxLTA();
+                $scope.variables.lta.value = Math.min($scope.variables.lta.slider.max, $scope.variables.lta.value);
             }
             if (key == "months") {
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
-                $scope.variables.ca.value = Math.min($scope.variables.ca.slider.max, $scope.variables.ca.value);
+                // $scope.variables.ca.value = Math.min($scope.variables.ca.slider.max, $scope.variables.ca.value);
+                $scope.variables.ca.value = $scope.variables.months.value * 1600;
             }
             if (key == "x2") {
                 $scope.variables.x1.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value;
@@ -194,6 +210,7 @@ angular.module('frontApp')
             }
 
             if (!(key == "x1" || key == "x2" || key == "x3")) {
+                $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
                 $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
                 var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
                 solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
@@ -212,10 +229,10 @@ angular.module('frontApp')
                 $scope.variables.z.value = res[3]
             } else {
                 $scope.variables.z.value = Math.min($scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value)
-
             }
-
+            var variables = $scope.variables;
+            $scope.variables = null
+            $scope.variables = variables;
         }
         $scope.find("c1", $scope.variables.c1);
-
     }]);
