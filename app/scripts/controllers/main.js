@@ -237,6 +237,10 @@ angular.module('frontApp')
             "tax": {
                 "name": "Tax",
                 "value": 0
+            },
+            "saveTax": {
+            	"name": "Tax Saved",
+            	"value": 0
             }
         }
         var getTax = function(money) {
@@ -367,6 +371,12 @@ angular.module('frontApp')
                 $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value + $scope.variables.ma.value + $scope.variables.meal.value + $scope.variables.z.value + $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue + $scope.variables.lta.value + $scope.variables.da.value + $scope.variables.fc.value + $scope.variables.ca.value);
             }
             $scope.variables.tax.value = getTax($scope.variables.taxable.value);
+            $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.taxable.value);
+            if($scope.variables.saveTax.value>0)
+            	$scope.variables.saveTax.hide=false;
+            else
+            	$scope.variables.saveTax.hide=true;
+
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;
