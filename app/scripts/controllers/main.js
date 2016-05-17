@@ -16,7 +16,7 @@ angular.module('frontApp')
                 "value": 1000000,
                 "slider": {
                     "min": 0,
-                    "max": 1000000,
+                    "max": 10000000,
                     "step": 1000
                 }
             },
@@ -30,8 +30,49 @@ angular.module('frontApp')
                     "step": 1
                 }
             },
+            "residence": {
+                "name": "Residance",
+                "value": "Rental",
+                "selector": {
+                    "prompt": "Type of residence",
+                    "value": "Rental",
+                    "options": [{
+                        "text": "Rental",
+                        "value": "Rental"
+                    }, {
+                        "text": "Owned",
+                        "value": "Owned"
+                    }, ]
+                }
+            },
+            "city": {
+                "name": "City of Residance",
+                "value": "Mumbai",
+                "percent": 50,
+                "selector": {
+                    "prompt": "Select your city",
+                    "value": "Mumbai",
+                    "options": [{
+                        "text": "Delhi",
+                        "value": "Delhi",
+                    }, {
+                        "text": "Mumbai",
+                        "value": "Mumbai"
+                    }, {
+                        "text": "Chennai",
+                        "value": "Chennai"
+                    }, {
+                        "text": "Kolkatta",
+                        "value": "Kolkatta"
+                    }, {
+                        "text": "Others",
+                        "value": "Others"
+                    }, ]
+                }
+            },
             "ma": {
                 "name": "Medical Allowance",
+                "description": "Exception can be claimed on production of bills of expenses of dependent parents",
                 "input": true,
                 "value": 15000,
                 "slider": {
@@ -54,10 +95,19 @@ angular.module('frontApp')
                 "name": "CEA",
                 "input": true,
                 "value": 0,
-                "slider": {
-                    "min": 0,
-                    "max": 2400,
-                    "step": 1200
+                "selector": {
+                    "prompt": "Number of children",
+                    "value": 0,
+                    "options": [{
+                        "text": "0",
+                        "value": 0
+                    }, {
+                        "text": "1",
+                        "value": 1
+                    }, {
+                        "text": "More than 1",
+                        "value": 2
+                    }, ]
                 }
             },
             "lta": {
@@ -89,6 +139,7 @@ angular.module('frontApp')
             },
             "ca": {
                 "name": "Coveyance Allowance",
+                "description": "Move to zero if your employer is providing conveyance facility",
                 "input": true,
                 "value": 19200,
                 "slider": {
@@ -98,7 +149,7 @@ angular.module('frontApp')
                 }
             },
             "da": {
-                "name": "Darness Allowance",
+                "name": "Dearness Allowance",
                 "input": true,
                 "value": 0,
                 "slider": {
@@ -116,13 +167,6 @@ angular.module('frontApp')
                     "max": 1000000,
                     "step": 1000
                 }
-            },
-            "residence": {
-                "hide": true,
-                "name": "Residance",
-                "selector": {
-                    "options": ["Rental", ""]
-                },
             },
             "c2": {
                 "name": "Constant 2",
@@ -170,8 +214,29 @@ angular.module('frontApp')
                     "step": 1000
                 }
             },
+            "pf": {
+                "name": "PF",
+                "value": 0,
+                "input": true,
+                "hide": true,
+                "checkbox": {
+                    "prompt": "Opt out?",
+                    "value": false
+                }
+            },
+            "esi": {
+                "name": "ESI",
+                "value": 0,
+                "input": true,
+                "hide": true,
+                "checkbox": {
+                    "prompt": "Opt out?",
+                    "value": false
+                }
+            },
+
             "z": {
-                "name": "HRA",
+                "name": "HRA(tax exempted)",
                 "value": 0
             },
         }
@@ -183,31 +248,39 @@ angular.module('frontApp')
         }
         setMaxLTA();
         window.scope = $scope
-
-        $scope.variables['blank'] = null
+            // $scope.variables['blank'] = null
 
         $scope.find = function(key, variable) {
-            console.log($scope.variables)
+            // console.log($scope.variables)
             if (key == "c1") {
                 setMaxLTA();
                 $scope.variables.lta.value = Math.min((10.7 * variable.value * 5) / (100 * 12), $scope.variables.lta.slider.max);
-            }
-            if (key == "lta") {
+            } else if (key == "months") {
+                $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
+                $scope.variables.ca.value = $scope.variables.ca.slider.max;
+            } else if (key == "residence") {
+                $scope.variables.residence.value = $scope.variables.residence.selector.value;
+                if ($scope.variables.residence.value == "Owned") {
+                    $scope.variables.residence.hra.hide = true;
+                }
+            } else if (key == "city") {
+                $scope.variables.city.value = $scope.variables.city.selector.value;
+                var city = $scope.variables.city.value;
+                if (city == "Mumbai" || city == "Chennai" || city == "Delhi" || city == "Kolkatta")
+                    $scope.variables.city.percent = 50;
+                else
+                    $scope.variables.city.percent = 40;
+            } else if (key == "lta") {
                 setMaxLTA();
                 $scope.variables.lta.value = Math.min($scope.variables.lta.slider.max, $scope.variables.lta.value);
-            }
-            if (key == "months") {
-                $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
-                // $scope.variables.ca.value = Math.min($scope.variables.ca.slider.max, $scope.variables.ca.value);
-                $scope.variables.ca.value = $scope.variables.ca.slider.max;
-            }
-            if (key == "x2") {
+            } else if (key == "cea") {
+                $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
+            } else if (key == "x2") {
                 $scope.variables.x1.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value;
-                // $scope.variables.x1.value = Math.min($scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value, $scope.variables.x1.slider.max);
-            }
-            if (key == "x1") {
+                $scope.variables.x1.value = $scope.variables.x1.slider.max;
+            } else if (key == "x1") {
                 $scope.variables.x2.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value;
-                // $scope.variables.x2.value = Math.min($scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value, $scope.variables.x2.slider.max);
+                $scope.variables.x2.value = $scope.variables.x2.slider.max;
             }
 
             if (!(key == "x1" || key == "x2" || key == "x3")) {
@@ -231,6 +304,19 @@ angular.module('frontApp')
             } else {
                 $scope.variables.z.value = Math.min($scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value)
             }
+
+            if ($scope.variables.x1.value >= 180000) {
+                $scope.variables.pf.hide = false;
+                $scope.variables.esi.hide = false;
+                $scope.variables.pf.value = 12 * $scope.variables.x1.value / 100;
+                $scope.variables.esi.value = 4.75 * $scope.variables.x1.value / 100;
+            } else {
+                $scope.variables.pf.hide = true;
+                $scope.variables.pf.value = 12 * $scope.variables.x1.value / 100;
+                $scope.variables.esi.hide = true;
+                $scope.variables.esi.value = 4.75 * $scope.variables.x1.value / 100;
+            }
+
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;
