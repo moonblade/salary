@@ -48,7 +48,7 @@ angular.module('frontApp')
             "city": {
                 "name": "City of Residance",
                 "value": "Mumbai",
-                "percent": 50,
+                "percent": 0.5,
                 "selector": {
                     "prompt": "Select your city",
                     "value": "Mumbai",
@@ -270,6 +270,21 @@ angular.module('frontApp')
             }
             return tax;
         }
+        var optimise = function(onesixsevenfive) {
+        	var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
+                solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+                if (onesixsevenfive) {
+                    solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
+                    solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
+                } else {
+                    solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                    solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+
+                }
+                return solver.solve()
+        }
         var setMaxLTA = function() {
             if ($scope.variables.c1.value > 600000)
                 $scope.variables.lta.slider.max = 20000 * $scope.variables.lta.selector.value;
@@ -298,9 +313,9 @@ angular.module('frontApp')
                 $scope.variables.city.value = $scope.variables.city.selector.value;
                 var city = $scope.variables.city.value;
                 if (city == "Mumbai" || city == "Chennai" || city == "Delhi" || city == "Kolkatta")
-                    $scope.variables.city.percent = 50;
+                    $scope.variables.city.percent = 0.5;
                 else
-                    $scope.variables.city.percent = 40;
+                    $scope.variables.city.percent = 0.4;
             } else if (key == "lta") {
                 setMaxLTA();
                 if (lastLTA != $scope.variables.lta.slider.max) {
@@ -321,20 +336,7 @@ angular.module('frontApp')
             if (!(key == "x1" || key == "x2" || key == "x3")) {
                 $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
                 $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
-                var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
-                solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-                solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-                solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-                if ($scope.variables.pfesi.checkbox.value) {
-                    solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
-                    solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
-                } else {
-                    solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-                    solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-
-                }
-                var res = solver.solve()
-
+                var res=optimise($scope.variables.pfesi.checkbox.value);
                 $scope.variables.x1.slider.max = res[0]
                 $scope.variables.x1.value = res[0]
                 $scope.variables.x2.slider.max = res[1]
@@ -345,8 +347,8 @@ angular.module('frontApp')
             } else {
                 $scope.variables.z.value = Math.min($scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value)
             }
-
-            if ($scope.variables.x1.value >= 180000) {
+            console.log(optimise(false))
+            if (optimise(false)[0] >= 180000) {
                 if ($scope.variables.pfesi.checkbox.value) {
                     $scope.variables.pfesi.hide = false;
                     $scope.variables.pfesi.pfvalue = 12 * $scope.variables.x1.value / 100;
@@ -367,13 +369,13 @@ angular.module('frontApp')
                 "\nLTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max) +
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
-                "\nCA amount : " + $scope.variables.ca.value;
-            if (!$scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
-                $scope.variables.taxable.description += "\nPF amount : " + $scope.variables.pfesi.pfvalue +
-                    "\nESI amount : " + $scope.variables.pfesi.esivalue;
-                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + $scope.variables.ca.value);
+                "\nCA amount : " + ($scope.variables.ca.value - 19200) ;
+            if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
+                $scope.variables.taxable.description += "\nPF amount : " + (-$scope.variables.pfesi.pfvalue)+
+                    "\nESI amount : " + (-$scope.variables.pfesi.esivalue);
+                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value - $scope.variables.pfesi.pfvalue - $scope.variables.pfesi.esivalue + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
             } else {
-                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + $scope.variables.ca.value);
+                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
             }
             $scope.variables.tax.value = getTax($scope.variables.taxable.value);
             $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.taxable.value);
