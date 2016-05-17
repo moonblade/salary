@@ -13,7 +13,7 @@ angular.module('frontApp')
             "c1": {
                 "name": "CTC/Total Salary",
                 "input": true,
-                "value": 1000000,
+                "value": 5000000,
                 "slider": {
                     "min": 0,
                     "max": 10000000,
@@ -214,27 +214,18 @@ angular.module('frontApp')
                     "step": 1000
                 }
             },
-            "pf": {
-                "name": "PF",
+            "pfesi": {
+                "name": "PF and ESI",
                 "value": 0,
+                "pfvalue": 0,
+                "esivalue": 0,
                 "input": true,
                 "hide": true,
                 "checkbox": {
-                    "prompt": "Opt out?",
+                    "prompt": "Deduct pf and esi?",
                     "value": false
                 }
             },
-            "esi": {
-                "name": "ESI",
-                "value": 0,
-                "input": true,
-                "hide": true,
-                "checkbox": {
-                    "prompt": "Opt out?",
-                    "value": false
-                }
-            },
-
             "z": {
                 "name": "HRA(tax exempted)",
                 "value": 0
@@ -290,8 +281,14 @@ angular.module('frontApp')
                 solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
                 solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
                 solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-                solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-                solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                if (!$scope.variables.pfesi.checkbox.value) {
+                    solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
+                    solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
+                } else {
+                    solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                    solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+
+                }
                 var res = solver.solve()
 
                 $scope.variables.x1.slider.max = res[0]
@@ -306,17 +303,17 @@ angular.module('frontApp')
             }
 
             if ($scope.variables.x1.value >= 180000) {
-                $scope.variables.pf.hide = false;
-                $scope.variables.esi.hide = false;
-                $scope.variables.pf.value = 12 * $scope.variables.x1.value / 100;
-                $scope.variables.esi.value = 4.75 * $scope.variables.x1.value / 100;
+                if (!$scope.variables.pfesi.checkbox.value) {
+	                $scope.variables.pfesi.hide = false;
+                    $scope.variables.pfesi.pfvalue = 12 * $scope.variables.x1.value / 100;
+                    $scope.variables.pfesi.esivalue = 4.75 * $scope.variables.x1.value / 100;
+                    $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
+                }
             } else {
-                $scope.variables.pf.hide = true;
-                $scope.variables.pf.value = 12 * $scope.variables.x1.value / 100;
-                $scope.variables.esi.hide = true;
-                $scope.variables.esi.value = 4.75 * $scope.variables.x1.value / 100;
+                $scope.variables.pfesi.hide = true;
+                $scope.variables.pfesi.checkbox.value = false;
             }
-
+            $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;

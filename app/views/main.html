@@ -22,20 +22,23 @@
                     </md-select>
                 </md-input-container>
                 <md-slider ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" ng-change="find(key,variable)" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
-                <md-checkbox ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
+                <md-checkbox ng-change=find(key,variable) ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
                     {{variable.checkbox.prompt}}
                 </md-checkbox>
             </md-card-content>
         </md-card>
     </div>
 </div>
-<!-- 
-<div ng-repeat="(key, variable) in variables">
+
+<!-- <div ng-repeat="(key, variable) in variables">
     <div class="layout-row" ng-if="!variable.hide">
         <div class="layout-align-center-center layout-row flex-30" layout-align="center center">
             <span class="md-body-1">{{variable.name}}</span>
         </div>
         <md-slider class="flex" ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" ng-change="find(key,variable)" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
+        <md-checkbox ng-change=find(key,variable) ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
+            {{variable.checkbox.prompt}}
+        </md-checkbox>
         <div class="layout-row flex-10" ng-if="variable.selector">
             <md-input-container>
                 <md-select ng-change=find(key,variable) ng-model="variable.selector.value" placeholder="variable.selector.prompt">
