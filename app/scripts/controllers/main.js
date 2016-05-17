@@ -223,13 +223,48 @@ angular.module('frontApp')
                 "hide": true,
                 "checkbox": {
                     "prompt": "Deduct pf and esi?",
-                    "value": false
+                    "value": true
                 }
             },
             "z": {
                 "name": "HRA(tax exempted)",
                 "value": 0
             },
+            "taxable": {
+                "name": "Taxable Income",
+                "value": 0
+            },
+            "tax": {
+                "name": "Tax",
+                "value": 0
+            }
+        }
+        var getTax = function(money) {
+            var tax = 0;
+            var a = money
+            money -= 250000;
+            if (money > 0) {
+                if (a <= 500000)
+                    tax -= 2000;
+                money -= 250000;
+                if (money > 0) {
+                    tax += 250000 * .1;
+                    money -= 500000;
+                    if (money > 0) {
+                        tax += 500000 * .2;
+                        money -= 500000;
+                        if (money > 0)
+                            tax += money * .3;
+                        else
+                            tax += (500000 + money) * .3;
+                    } else {
+                        tax += (500000 + money) * .2;
+                    }
+                } else {
+                    tax += (250000 + money) * .1;
+                }
+            }
+            return tax;
         }
         var setMaxLTA = function() {
             if ($scope.variables.c1.value > 600000)
@@ -281,7 +316,7 @@ angular.module('frontApp')
                 solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
                 solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
                 solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-                if (!$scope.variables.pfesi.checkbox.value) {
+                if ($scope.variables.pfesi.checkbox.value) {
                     solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
                     solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
                 } else {
@@ -303,8 +338,8 @@ angular.module('frontApp')
             }
 
             if ($scope.variables.x1.value >= 180000) {
-                if (!$scope.variables.pfesi.checkbox.value) {
-	                $scope.variables.pfesi.hide = false;
+                if ($scope.variables.pfesi.checkbox.value) {
+                    $scope.variables.pfesi.hide = false;
                     $scope.variables.pfesi.pfvalue = 12 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.esivalue = 4.75 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
@@ -313,7 +348,25 @@ angular.module('frontApp')
                 $scope.variables.pfesi.hide = true;
                 $scope.variables.pfesi.checkbox.value = false;
             }
+
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
+            $scope.variables.taxable.description = "Basic Salary : " + $scope.variables.x1.value +
+                "\nCEA : " + $scope.variables.cea.value +
+                "\nMedical Allowance : " + $scope.variables.ma.value +
+                "\nMeal Allowance : " + $scope.variables.meal.value +
+                "\nHRA amount : " + $scope.variables.z.value +
+                "\nLTA amount : " + $scope.variables.lta.value +
+                "\nDA amount : " + $scope.variables.da.value +
+                "\nFC amount : " + $scope.variables.fc.value +
+                "\nCA amount : " + $scope.variables.ca.value;
+            if (!$scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
+                $scope.variables.taxable.description += "\nPF amount : " + $scope.variables.pfesi.pfvalue +
+                    "\nESI amount : " + $scope.variables.pfesi.esivalue;
+                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value + $scope.variables.ma.value + $scope.variables.meal.value + $scope.variables.z.value + $scope.variables.lta.value + $scope.variables.da.value + $scope.variables.fc.value + $scope.variables.ca.value);
+            } else {
+                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value + $scope.variables.ma.value + $scope.variables.meal.value + $scope.variables.z.value + $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue + $scope.variables.lta.value + $scope.variables.da.value + $scope.variables.fc.value + $scope.variables.ca.value);
+            }
+            $scope.variables.tax.value = getTax($scope.variables.taxable.value);
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;

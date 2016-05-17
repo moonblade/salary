@@ -14,7 +14,7 @@
                 </md-card-header-text>
             </md-card-header>
             <md-card-content>
-                <p>{{variable.description}}</p>
+                <pre>{{variable.description}}</pre>
                 <md-input-container ng-if="variable.selector" style="width: 100%">
                     <label>{{variable.selector.prompt}}</label>
                     <md-select ng-change=find(key,variable) ng-model="variable.selector.value" placeholder="{{variable.selector.prompt}}">
