@@ -13,7 +13,7 @@ angular.module('frontApp')
             "c1": {
                 "name": "CTC/Total Salary",
                 "input": true,
-                "value": 5000000,
+                "value": 1000000,
                 "slider": {
                     "min": 0,
                     "max": 10000000,
@@ -244,14 +244,14 @@ angular.module('frontApp')
             }
         }
         var getTax = function(money) {
+            var m = 0
             if (money > 1000000)
-                return (money - 1000000) * .3 + 125000
+                m = (money - 1000000) * .3 + 125000
             else if (money > 500000)
-                return (money - 500000) * .2 + 25000
+                m = (money - 500000) * .2 + 25000
             else if (money > 250000)
-                return (money - 250000) * .1 - 2000
-            else
-                return 0;
+                m = (money - 250000) * .1 - 2000
+            return m > 0 ? m : 0
         }
         var optimise = function(onesixsevenfive) {
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
@@ -268,6 +268,30 @@ angular.module('frontApp')
             }
             return solver.solve()
         }
+
+
+        var findUnknowns = function(checkboxValue) {
+            $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
+            $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
+            var res = optimise(checkboxValue);
+            $scope.variables.x1.slider.max = res[0]
+            $scope.variables.x1.value = res[0]
+            $scope.variables.x2.slider.max = res[1]
+            $scope.variables.x2.value = res[1]
+            $scope.variables.x3.slider.max = res[2]
+            $scope.variables.x3.value = res[2]
+            $scope.variables.z.value = res[3]
+            console.log('city : ' + $scope.variables.city.percent)
+            console.log('c1 : ' + $scope.variables.c1.value)
+            console.log('c2 : ' + $scope.variables.c2.value)
+            console.log('c3 : ' + $scope.variables.c3.value)
+            console.log('x1 : ' + $scope.variables.x1.value)
+            console.log('x2 : ' + $scope.variables.x2.value)
+            console.log('x3 : ' + $scope.variables.x3.value)
+            console.log('z : ' + $scope.variables.z.value)
+
+        }
+
         var setMaxLTA = function() {
             if ($scope.variables.c1.value > 600000)
                 $scope.variables.lta.slider.max = 20000 * $scope.variables.lta.selector.value;
@@ -322,6 +346,7 @@ angular.module('frontApp')
             }
 
             if (!(key == "x1" || key == "x2" || key == "x3")) {
+<<<<<<< HEAD
                 $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
                 $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
                 var res = optimise($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
@@ -332,6 +357,9 @@ angular.module('frontApp')
                 $scope.variables.x3.slider.max = res[2]
                 $scope.variables.x3.value = res[2]
                 $scope.variables.z.value = res[3]
+=======
+                findUnknowns($scope.variables.pfesi.checkbox.value)
+>>>>>>> 27bd05715041d8d11592d73501deb4d97cd092a2
             } else {
                 $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent * $scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value - 0.1 * $scope.variables.x1.value), 0))
             }
@@ -348,6 +376,7 @@ angular.module('frontApp')
                     $scope.variables.pfesi.description = "PF : " + 0 + ", ESI : " + 0;
                     $scope.variables.pfesi.value = 0;
                 }
+                findUnknowns(true)
             } else {
                 $scope.variables.pfesi.hide = true;
                 $scope.variables.pfesi.checkbox.value = false;
