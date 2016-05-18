@@ -12,7 +12,7 @@ angular.module('frontApp')
     	$scope.constants = {
     		"raw":1
     	};
-
+    	var flag=true;
         $scope.variables = {
             "c1": {
                 "name": "CTC/Total Salary",
@@ -362,8 +362,12 @@ angular.module('frontApp')
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             console.log(optimise(false))
             if (optimise(false)[0] >= 180000) {
+                $scope.variables.pfesi.hide = false;
+                if(flag){
+	                $scope.variables.pfesi.checkbox.value = true;
+	                flag=false;
+                }
                 if ($scope.variables.pfesi.checkbox.value) {
-                    $scope.variables.pfesi.hide = false;
                     $scope.variables.pfesi.pfvalue = 12 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.esivalue = 4.75 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
@@ -372,8 +376,9 @@ angular.module('frontApp')
                     $scope.variables.pfesi.description = "PF : " + 0 + ", ESI : " + 0;
                     $scope.variables.pfesi.value = 0;
                 }
-                findUnknowns($scope.variables.pfesi.checkbox.value)
+                // findUnknowns($scope.variables.pfesi.checkbox.value)
             } else {
+                flag=true;
                 $scope.variables.pfesi.hide = true;
                 $scope.variables.pfesi.checkbox.value = false;
             }
