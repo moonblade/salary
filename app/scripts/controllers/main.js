@@ -367,6 +367,8 @@ angular.module('frontApp')
                     $scope.variables.c4.value = 0;
                     var res=optimise(onesixsevenfivebool,undefined,$scope.variables.x2.value)
                     $scope.variables.x1.slider.max = res[1]
+                    $scope.variables.x3.slider.max = res[2]
+                    $scope.variables.x3.value = res[2]
                     $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 }
             } else if (key == "x1") {
@@ -383,6 +385,8 @@ angular.module('frontApp')
                     $scope.variables.c4.value = 0;
                     var res=optimise(onesixsevenfivebool,$scope.variables.x1.value)
                     $scope.variables.x2.slider.max = res[1];
+                    $scope.variables.x3.slider.max = res[2]
+                    $scope.variables.x3.value = res[2]
                     $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 }
             }
