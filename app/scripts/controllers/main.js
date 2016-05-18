@@ -292,6 +292,10 @@ angular.module('frontApp')
                     $scope.variables.z.hide = true;
                     $scope.variables.x3.hide = true;
                     // $scope.variables.x2.hide = true;
+                }else{
+                	$scope.variables.z.hide = false;
+                    $scope.variables.x3.hide = false;
+                    // $scope.variables.x2.hide = false;
                 }
             } else if (key == "city") {
                 $scope.variables.city.value = $scope.variables.city.selector.value;
