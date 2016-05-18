@@ -247,7 +247,7 @@ angular.module('frontApp')
             if (money > 1000000)
             	return (money-1000000)*.3 + 125000
             else if(money > 500000)
-            	return (money-500000)*.2 + 250000
+            	return (money-500000)*.2 + 25000
             else if (money > 250000)
             	return (money-250000)*.1 -2000
             else
