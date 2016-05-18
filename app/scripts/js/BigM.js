@@ -105,6 +105,7 @@ BigM.prototype.solve = function() {
         var c = this._getColumnToPivot();
         var r = this._getRowToPivot(c);
         if(!this._pivot(r, c)){
+        	break
         	solution = []
         	for(var i=0;i<longConstant;++i)
         		solution.push(0)

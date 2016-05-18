@@ -9,6 +9,10 @@
  */
 angular.module('frontApp')
     .controller('MainCtrl', ['$scope', function($scope) {
+    	$scope.constants = {
+    		"raw":1
+    	};
+
         $scope.variables = {
             "c1": {
                 "name": "CTC/Total Salary",
@@ -241,7 +245,12 @@ angular.module('frontApp')
             "saveTax": {
                 "name": "Tax Saved",
                 "value": 0
+            },
+            "c4": {
+                "hide": true,
+                "value": 0
             }
+
         }
         var getTax = function(money) {
             var m = 0
@@ -259,11 +268,11 @@ angular.module('frontApp')
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             if (onesixsevenfive) {
-                solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
-                solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value);
+                solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value - $scope.variables.c4.value);
+                solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value - $scope.variables.c4.value);
             } else {
-                solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
-                solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value);
+                solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value - $scope.variables.c4.value);
+                solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value - $scope.variables.c4.value);
 
             }
             return solver.solve()
