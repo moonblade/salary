@@ -245,17 +245,17 @@ angular.module('frontApp')
         }
         var getTax = function(money) {
             if (money > 1000000)
-            	return (money-1000000)*.3 + 125000
-            else if(money > 500000)
-            	return (money-500000)*.2 + 25000
+                return (money - 1000000) * .3 + 125000
+            else if (money > 500000)
+                return (money - 500000) * .2 + 25000
             else if (money > 250000)
-            	return (money-250000)*.1 -2000
+                return (money - 250000) * .1 - 2000
             else
-            	return 0;
+                return 0;
         }
         var optimise = function(onesixsevenfive) {
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
-            solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+            solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             if (onesixsevenfive) {
@@ -292,8 +292,8 @@ angular.module('frontApp')
                     $scope.variables.z.hide = true;
                     $scope.variables.x3.hide = true;
                     // $scope.variables.x2.hide = true;
-                }else{
-                	$scope.variables.z.hide = false;
+                } else {
+                    $scope.variables.z.hide = false;
                     $scope.variables.x3.hide = false;
                     // $scope.variables.x2.hide = false;
                 }
@@ -333,7 +333,7 @@ angular.module('frontApp')
                 $scope.variables.x3.value = res[2]
                 $scope.variables.z.value = res[3]
             } else {
-                $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent*$scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value-0.1*$scope.variables.x1.value),0))
+                $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent * $scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value - 0.1 * $scope.variables.x1.value), 0))
             }
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             console.log(optimise(false))
@@ -343,10 +343,9 @@ angular.module('frontApp')
                     $scope.variables.pfesi.pfvalue = 12 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.esivalue = 4.75 * $scope.variables.x1.value / 100;
                     $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
-		            $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
-                }
-                else{
-		            $scope.variables.pfesi.description = "PF : " + 0 + ", ESI : " + 0;
+                    $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
+                } else {
+                    $scope.variables.pfesi.description = "PF : " + 0 + ", ESI : " + 0;
                     $scope.variables.pfesi.value = 0;
                 }
             } else {
@@ -358,7 +357,7 @@ angular.module('frontApp')
                 "\nCEA : " + ($scope.variables.cea.value - 2400) +
                 "\nMedical Allowance : " + ($scope.variables.ma.value - 15000) +
                 "\nMeal Allowance : " + ($scope.variables.meal.value - 12050) +
-                "\nHRA amount : " + ($scope.variables.residence.value!="Owned"?($scope.variables.x2.value - $scope.variables.z.value):0) +
+                "\nHRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0) +
                 "\nLTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max) +
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
