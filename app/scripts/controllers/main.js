@@ -237,7 +237,7 @@ angular.module('frontApp')
                 "value": 0
             },
             "c4": {
-            	"name":"Other Allowances",
+                "name": "Other Allowances",
                 "hide": true,
                 "value": 0
             },
@@ -255,6 +255,13 @@ angular.module('frontApp')
             },
 
         }
+
+        var limits = {
+            x1: 0,
+            x2: 0,
+            x3: 0
+        }
+
         var getTax = function(money) {
             var m = 0
             if (money > 1000000)
@@ -265,12 +272,14 @@ angular.module('frontApp')
                 m = (money - 250000) * .1 - 2000
             return m > 0 ? Math.round(m) : 0
         }
-        var optimise = function(onesixsevenfive, x1, x2) {
+        var optimise = function(onesixsevenfive) {
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
-            if (x1)
-                solver.addConstraint([1, 0, 0, 0], BigM.EQUALS, x1);
-            if (x2)
-                solver.addConstraint([0, 1, 0, 0], BigM.EQUALS, x2)
+            if (limits.x1)
+                solver.addConstraint([1, 0, 0, 0], BigM.EQUALS, limits.x1);
+            if (limits.x2)
+                solver.addConstraint([0, 1, 0, 0], BigM.EQUALS, limits.x2)
+            if (limits.x3)
+                solver.addConstraint([0, 0, 1, 0], BigM.EQUALS, limits.x3)
             solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
@@ -286,23 +295,23 @@ angular.module('frontApp')
         }
 
 
-        var findUnknowns = function(checkboxValue, x1, x2) {
+        var findUnknowns = function(checkboxValue) {
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
-            var res = optimise(checkboxValue, x1, x2);
-            console.log(res);
+            var res = optimise(checkboxValue);
             $scope.variables.x1.slider.max = Math.round(res[0])
             $scope.variables.x2.slider.max = Math.round(res[1])
             $scope.variables.x3.slider.max = Math.round(res[2])
             $scope.variables.z.value = Math.round(res[3])
-            // console.log('city : ' + $scope.variables.city.percent)
-            // console.log('c1 : ' + $scope.variables.c1.value)
-            // console.log('c2 : ' + $scope.variables.c2.value)
-            // console.log('c3 : ' + $scope.variables.c3.value)
-            // console.log('x1 : ' + $scope.variables.x1.value)
-            // console.log('x2 : ' + $scope.variables.x2.value)
-            // console.log('x3 : ' + $scope.variables.x3.value)
-            // console.log('z : ' + $scope.variables.z.value)
+            console.log('city : ' + $scope.variables.city.percent)
+            console.log('c1 : ' + $scope.variables.c1.value)
+            console.log('c2 : ' + $scope.variables.c2.value)
+            console.log('c3 : ' + $scope.variables.c3.value)
+            console.log('x1 : ' + res[0])
+            console.log('x2 : ' + res[1])
+            console.log('x3 : ' + res[2])
+            console.log('limits : ' + limits.x1 + " " + limits.x2 + " " + limits.x3)
+            console.log('z : ' + res[3])
 
         }
 
@@ -318,7 +327,7 @@ angular.module('frontApp')
         $scope.find = function(key, variable, method) {
             // console.log($scope.variables)
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
-            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)?1.1675:1;
+            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.1675 : 1;
             if (key == "c1") {
                 setMaxLTA();
 
@@ -354,45 +363,53 @@ angular.module('frontApp')
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
             } else if (key == "x2") {
+                limits.x2 = $scope.variables.x2.value
                 if (method == $scope.constants.raw && salaryChange) {
-                	console.log("x2if")
-                	$scope.variables.c4.hide= false;
+                    console.log("x2if")
+                    $scope.variables.c4.hide = false;
                     $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
-                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide, $scope.variables.x1.value, $scope.variables.x2.value)
+                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
                     hraChange = false;
                 } else {
-                	console.log("x2else")
-                	hraChange = true;
-                	$scope.variables.c4.hide= true;
+                    console.log("x2else")
+                    hraChange = true;
+                    $scope.variables.c4.hide = true;
                     $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool,undefined,$scope.variables.x2.value)
+                    findUnknowns(onesixsevenfivebool    )
                     $scope.variables.x3.value = $scope.variables.x3.slider.max;
                     $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 }
             } else if (key == "x1") {
+                limits.x1 = $scope.variables.x1.value
                 if (method == $scope.constants.raw && hraChange) {
-                	console.log("x1if")
-                	$scope.variables.c4.hide= false;
+                    console.log("x1if")
+                    $scope.variables.c4.hide = false;
                     $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
-                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide, $scope.variables.x1.value, $scope.variables.x2.value)
-                	salaryChange = false;
+                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
+                    salaryChange = false;
                 } else {
-                	console.log("x1else")
-                	$scope.variables.c4.hide= true;
-                	salaryChange = true;
+                    console.log("x1else")
+                    $scope.variables.c4.hide = true;
+                    salaryChange = true;
                     $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool,$scope.variables.x1.value)
+                    findUnknowns(onesixsevenfivebool, $scope.variables.x1.value)
                     $scope.variables.x3.value = $scope.variables.x3.slider.max;
                     $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 }
+            } else if (key == "x3") {
+                limits.x3 = $scope.variables.x3.value
             }
 
             if (!(key == "x1" || key == "x2" || key == "x3")) {
+                limits = {
+                    x1: 0,
+                    x2: 0,
+                    x3: 0
+                }
                 findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
                 $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 $scope.variables.x3.value = $scope.variables.x3.slider.max;
-
             } else {
                 $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent * $scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value - 0.1 * $scope.variables.x1.value), 0))
             }
