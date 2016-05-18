@@ -25,6 +25,7 @@ BigM.prototype.addConstraint = function(expression, operator, value) {
 }
 
 BigM.prototype.solve = function() {
+    console.log(this._constraints)
     this._matrix = [];
     this._matrix[0] = [
         [1, 0]
