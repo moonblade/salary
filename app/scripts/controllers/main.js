@@ -255,7 +255,7 @@ angular.module('frontApp')
         }
         var optimise = function(onesixsevenfive) {
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
-            solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
+            solver.addConstraint([0.5, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             if (onesixsevenfive) {
@@ -333,7 +333,7 @@ angular.module('frontApp')
                 $scope.variables.x3.value = res[2]
                 $scope.variables.z.value = res[3]
             } else {
-                $scope.variables.z.value = Math.round(Math.max(Math.min(0.5*$scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value-0.1*$scope.variables.x1.value),0))
+                $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent*$scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value-0.1*$scope.variables.x1.value),0))
             }
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             console.log(optimise(false))
