@@ -222,8 +222,7 @@ BigM.prototype._getRowToPivot = function(col) {
 BigM.last = {}
 BigM.prototype._pivot = function(row, col) {
     this._debug('Pivoting row ' + row + ', column ' + col);
-    if ((row < 0 || row < 0) || (row == BigM.last.row && row == BigM.last.row)) {
-        console.log("forced quit");
+    if ((row < 0 || col < 0) || (row == BigM.last.row && col == BigM.last.col)) {
 		BigM.last = {}
         return false;
     }
