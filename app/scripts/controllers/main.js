@@ -312,7 +312,7 @@ angular.module('frontApp')
             console.log('x3 : ' + res[2])
             console.log('limits : ' + limits.x1 + " " + limits.x2 + " " + limits.x3)
             console.log('z : ' + res[3])
-
+            console.log('---------------------')
         }
 
         var setMaxLTA = function() {
@@ -325,7 +325,7 @@ angular.module('frontApp')
         window.scope = $scope // to access scope variables and debug in console
         var lastLTA;
         $scope.find = function(key, variable, method) {
-            // console.log($scope.variables)
+            console.log(key + " " + variable.name + " " + method + " " + hraChange + " " + salaryChange)
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
             var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.1675 : 1;
             if (key == "c1") {
@@ -375,7 +375,7 @@ angular.module('frontApp')
                     hraChange = true;
                     $scope.variables.c4.hide = true;
                     $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool    )
+                    findUnknowns(onesixsevenfivebool)
                     $scope.variables.x3.value = $scope.variables.x3.slider.max;
                     $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 }
@@ -392,7 +392,7 @@ angular.module('frontApp')
                     $scope.variables.c4.hide = true;
                     salaryChange = true;
                     $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool, $scope.variables.x1.value)
+                    findUnknowns(onesixsevenfivebool)
                     $scope.variables.x3.value = $scope.variables.x3.slider.max;
                     $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 }
@@ -463,7 +463,6 @@ angular.module('frontApp')
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;
-            console.log($scope.variables.c2.value);
         }
         $scope.find("c1", $scope.variables.c1);
     }]);
