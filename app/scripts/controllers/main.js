@@ -324,7 +324,7 @@ angular.module('frontApp')
             if (!(key == "x1" || key == "x2" || key == "x3")) {
                 $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
                 $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
-                var res = optimise($scope.variables.pfesi.checkbox.value);
+                var res = optimise($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
                 $scope.variables.x1.slider.max = res[0]
                 $scope.variables.x1.value = res[0]
                 $scope.variables.x2.slider.max = res[1]
@@ -362,12 +362,11 @@ angular.module('frontApp')
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
                 "\nCA amount : " + ($scope.variables.ca.value - 19200);
+            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 $scope.variables.taxable.description += "\nPF amount : " + (-$scope.variables.pfesi.pfvalue) +
                     "\nESI amount : " + (-$scope.variables.pfesi.esivalue);
-                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value - $scope.variables.pfesi.pfvalue - $scope.variables.pfesi.esivalue + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
-            } else {
-                $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
+                $scope.variables.taxable.value -= Math.round($scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue);
             }
             $scope.variables.tax.value = getTax($scope.variables.taxable.value);
             $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.taxable.value);
