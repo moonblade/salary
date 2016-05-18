@@ -8,7 +8,7 @@
                         <span ng-if="!variable.slider" style="text-align:left" class="md-title">{{variable.name}}</span>
                     </div>
                     <div class="layout-align-center-center layout-row flex-20" layout-align="center center">
-                        <input class="flex" ng-change="find(key,variable,1)" ng-if="variable.input" type="number" ng-model="variable.value" />
+                        <input class="flex" ng-change="find(key,variable,constants.raw)" ng-if="variable.input" type="number" ng-model="variable.value" />
                         <span class="flex" ng-if="!variable.input">{{variable.value}}</span>
                     </div>
                 </md-card-header-text>
