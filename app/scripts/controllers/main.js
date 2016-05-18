@@ -12,6 +12,8 @@ angular.module('frontApp')
         $scope.constants = {
             "raw": 1
         };
+        var salaryChange = false;
+        var hraChange = false;
         var flag = true;
         $scope.variables = {
             "c1": {
@@ -234,6 +236,11 @@ angular.module('frontApp')
                 "name": "HRA(tax exempted)",
                 "value": 0
             },
+            "c4": {
+            	"name":"Other Allowances",
+                "hide": true,
+                "value": 0
+            },
             "taxable": {
                 "name": "Taxable Income",
                 "value": 0
@@ -246,10 +253,6 @@ angular.module('frontApp')
                 "name": "Tax Saved",
                 "value": 0
             },
-            "c4": {
-                "hide": true,
-                "value": 0
-            }
 
         }
         var getTax = function(money) {
@@ -287,6 +290,7 @@ angular.module('frontApp')
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
             var res = optimise(checkboxValue, x1, x2);
+            console.log(res);
             $scope.variables.x1.slider.max = Math.round(res[0])
             $scope.variables.x2.slider.max = Math.round(res[1])
             $scope.variables.x3.slider.max = Math.round(res[2])
@@ -313,6 +317,8 @@ angular.module('frontApp')
         var lastLTA;
         $scope.find = function(key, variable, method) {
             // console.log($scope.variables)
+            var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
+            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)?1.1675:1;
             if (key == "c1") {
                 setMaxLTA();
 
@@ -348,21 +354,35 @@ angular.module('frontApp')
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
             } else if (key == "x2") {
-                if (method == $scope.constants.raw) {
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value - $scope.variables.x2.value;
+                if (method == $scope.constants.raw && salaryChange) {
+                	console.log("x2if")
+                	$scope.variables.c4.hide= false;
+                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
                     findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide, $scope.variables.x1.value, $scope.variables.x2.value)
+                    hraChange = false;
                 } else {
+                	console.log("x2else")
+                	hraChange = true;
+                	$scope.variables.c4.hide= true;
                     $scope.variables.c4.value = 0;
-                    $scope.variables.x1.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x2.value;
+                    var res=optimise(onesixsevenfivebool,undefined,$scope.variables.x2.value)
+                    $scope.variables.x1.slider.max = res[1]
                     $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 }
             } else if (key == "x1") {
-                if (method == $scope.constants.raw) {
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value - $scope.variables.x2.value;
+                if (method == $scope.constants.raw && hraChange) {
+                	console.log("x1if")
+                	$scope.variables.c4.hide= false;
+                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
                     findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide, $scope.variables.x1.value, $scope.variables.x2.value)
+                	salaryChange = false;
                 } else {
+                	console.log("x1else")
+                	$scope.variables.c4.hide= true;
+                	salaryChange = true;
                     $scope.variables.c4.value = 0;
-                    $scope.variables.x2.slider.max = $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.x1.value;
+                    var res=optimise(onesixsevenfivebool,$scope.variables.x1.value)
+                    $scope.variables.x2.slider.max = res[1];
                     $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 }
             }
@@ -408,8 +428,9 @@ angular.module('frontApp')
                 "\nLTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max) +
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
+                "\nOthers : " + $scope.variables.c4.value +
                 "\nCA amount : " + ($scope.variables.ca.value - 19200);
-            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200));
+            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - 2400 + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 $scope.variables.taxable.description += "\nPF amount : " + (-$scope.variables.pfesi.pfvalue) +
                     "\nESI amount : " + (-$scope.variables.pfesi.esivalue);
@@ -425,7 +446,7 @@ angular.module('frontApp')
             var variables = $scope.variables;
             $scope.variables = null
             $scope.variables = variables;
-            // console.log($scope.variables.c2.value);
+            console.log($scope.variables.c2.value);
         }
         $scope.find("c1", $scope.variables.c1);
     }]);
