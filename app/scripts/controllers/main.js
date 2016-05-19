@@ -305,14 +305,17 @@ angular.module('frontApp')
             if (which==undefined || which & 1) {
                 console.log('x1 : ' + res[0])
                 $scope.variables.x1.slider.max = Math.round(res[0])
+                $scope.variables.x1.value = Math.round(res[0])
             }
             if (which==undefined || which & 2) {
                 console.log('x2 : ' + res[1])
                 $scope.variables.x2.slider.max = Math.round(res[1])
+                $scope.variables.x2.value = Math.round(res[1])
             }
             if (which==undefined || which & 4) {
                 console.log('x3 : ' + res[2])
                 $scope.variables.x3.slider.max = Math.round(res[2])
+                $scope.variables.x3.value = Math.round(res[2])
             }
             if (which==undefined || which & 8) {
                 $scope.variables.z.value = Math.round(res[3])
