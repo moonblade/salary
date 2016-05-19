@@ -355,7 +355,7 @@ angular.module('frontApp')
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
                 $scope.variables.ca.value = $scope.variables.ca.slider.max;
                 $scope.variables.meal.slider.max = Math.round(50*241/12*$scope.variables.months.value);
-                $scope.variables.meal.value = $scope.variables.meal.slider.max;d
+                $scope.variables.meal.value = $scope.variables.meal.slider.max;
             } else if (key == "residence") {
                 $scope.variables.residence.value = $scope.variables.residence.selector.value;
                 nohra = $scope.variables.residence.value == "Owned";
