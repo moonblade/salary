@@ -292,8 +292,8 @@ angular.module('frontApp')
             solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            solver.addConstraint([multiplier, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - $scope.variables.c4.value);
-            solver.addConstraint([multiplier, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - $scope.variables.c4.value);
+            solver.addConstraint([multiplier, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - Math.max(0, $scope.variables.c4.value));
+            solver.addConstraint([multiplier, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - Math.max(0, $scope.variables.c4.value));
             return solver.solve()
         }
 
@@ -302,30 +302,30 @@ angular.module('frontApp')
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
             var res = optimise(checkboxValue);
-            if (which==undefined || which & 1) {
-                console.log('x1 : ' + res[0])
+            if (which == undefined || which & 1) {
                 $scope.variables.x1.slider.max = Math.round(res[0])
                 $scope.variables.x1.value = Math.round(res[0])
             }
-            if (which==undefined || which & 2) {
-                console.log('x2 : ' + res[1])
+            if (which == undefined || which & 2) {
                 $scope.variables.x2.slider.max = Math.round(res[1])
                 $scope.variables.x2.value = Math.round(res[1])
             }
-            if (which==undefined || which & 4) {
-                console.log('x3 : ' + res[2])
+            if (which == undefined || which & 4) {
                 $scope.variables.x3.slider.max = Math.round(res[2])
                 $scope.variables.x3.value = Math.round(res[2])
             }
-            if (which==undefined || which & 8) {
+            if (which == undefined || which & 8) {
                 $scope.variables.z.value = Math.round(res[3])
-                console.log('z : ' + res[3])
             }
-            console.log('checkbox : ' + checkboxValue)
-            console.log('city : ' + $scope.variables.city.percent)
+            // console.log('checkbox : ' + checkboxValue)
+            // console.log('city : ' + $scope.variables.city.percent)
             console.log('c1 : ' + $scope.variables.c1.value)
             console.log('c2 : ' + $scope.variables.c2.value)
             console.log('c3 : ' + $scope.variables.c3.value)
+            console.log('x1 : ' + res[0])
+            console.log('x2 : ' + res[1])
+            console.log('x3 : ' + res[2])
+            console.log('z : ' + res[3])
             console.log('c4 : ' + $scope.variables.c4.value)
             console.log('limits : ' + limits.x1 + " " + limits.x2 + " " + limits.x3)
             console.log('res : ' + res)
@@ -342,7 +342,7 @@ angular.module('frontApp')
         window.scope = $scope // to access scope variables and debug in console
         var lastLTA;
         $scope.find = function(key, variable, method) {
-            console.log(key + " " + method + " " + hraChange + " " + salaryChange)
+            // console.log(key + " " + method + " " + hraChange + " " + salaryChange)
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
             var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.1675 : 1;
             if (key == "c1") {
@@ -386,8 +386,12 @@ angular.module('frontApp')
                 which -= limits.x3 ? constants.x3 : 0;
                 if (limits.x2) {
                     $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive* $scope.variables.c3.value - onesixsevenfive* $scope.variables.x1.value - $scope.variables.x2.value;
+                    $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
                     salaryChange = false;
+                    if($scope.variables.c4.value==0){
+                    	which+=constants.x2;
+                    	limits.x2=0;
+                    }
                     findUnknowns(onesixsevenfivebool, which)
                 } else {
                     findUnknowns(onesixsevenfivebool, which)
@@ -405,8 +409,11 @@ angular.module('frontApp')
                 findUnknowns(onesixsevenfivebool, which)
                 if (limits.x1) {
                     $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive* $scope.variables.c3.value - onesixsevenfive* $scope.variables.x1.value - $scope.variables.x2.value;
-                    hraChange = false;
+                    $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
+                    if($scope.variables.c4.value==0){
+                    	which+=constants.x1;
+                    	limits.x1=0;
+                    }hraChange = false;
                     findUnknowns(onesixsevenfivebool, which)
                 } else {
                     findUnknowns(onesixsevenfivebool, which)
@@ -440,7 +447,7 @@ angular.module('frontApp')
             }
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             if (optimise(false)[0] >= 180000 && $scope.variables.x1.value >= 180000) {
-                console.log('in psi')
+                // console.log('in psi')
                 $scope.variables.pfesi.hide = false;
                 if (flag) {
                     $scope.variables.pfesi.checkbox.value = true;
