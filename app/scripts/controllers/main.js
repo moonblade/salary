@@ -10,8 +10,13 @@
 angular.module('frontApp')
     .controller('MainCtrl', ['$scope', function($scope) {
         $scope.constants = {
-            "raw": 1
+            "raw": 1,
+            "x1": 1,
+            "x2": 2,
+            "x3": 4,
+            "total": 15,
         };
+        var constants = $scope.constants;
         var salaryChange = false;
         var hraChange = false;
         var flag = true;
@@ -261,7 +266,7 @@ angular.module('frontApp')
             x2: 0,
             x3: 0
         }
-
+        var whichLimits = 0;
         var getTax = function(money) {
             var m = 0
             if (money > 1000000)
@@ -273,6 +278,7 @@ angular.module('frontApp')
             return m > 0 ? Math.round(m) : 0
         }
         var optimise = function(onesixsevenfive) {
+            var multiplier = onesixsevenfive ? 1.1675 : 1;
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
             if (limits.x1) {
                 solver.addConstraint([1, 0, 0, 0], BigM.GREATER_OR_EQUAL_THAN, limits.x1);
@@ -287,37 +293,40 @@ angular.module('frontApp')
             solver.addConstraint([$scope.variables.city.percent, 0, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([0, 1, 0, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
             solver.addConstraint([-0.1, 0, 1, -1], BigM.GREATER_OR_EQUAL_THAN, 0);
-            console.log('onesixsevenfive : ' + onesixsevenfive)
-            if (onesixsevenfive) {
-                solver.addConstraint([1.1675, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value - $scope.variables.c4.value);
-                solver.addConstraint([1.1675, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - 1.1675 * $scope.variables.c3.value - $scope.variables.c4.value);
-            } else {
-                solver.addConstraint([1, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value - $scope.variables.c4.value);
-                solver.addConstraint([1, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - $scope.variables.c3.value - $scope.variables.c4.value);
-
-            }
+            solver.addConstraint([multiplier, 1, 0, 0], BigM.GREATER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - $scope.variables.c4.value);
+            solver.addConstraint([multiplier, 1, 0, 0], BigM.LOWER_OR_EQUAL_THAN, $scope.variables.c1.value - $scope.variables.c2.value - multiplier * $scope.variables.c3.value - $scope.variables.c4.value);
             return solver.solve()
         }
 
 
-        var findUnknowns = function(checkboxValue) {
+        var findUnknowns = function(checkboxValue, which) {
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
             var res = optimise(checkboxValue);
-            $scope.variables.x1.slider.max = Math.round(res[0])
-            $scope.variables.x2.slider.max = Math.round(res[1])
-            $scope.variables.x3.slider.max = Math.round(res[2])
-            $scope.variables.z.value = Math.round(res[3])
+            if (!which || which & 1) {
+                console.log('x1 : ' + res[0])
+                $scope.variables.x1.slider.max = Math.round(res[0])
+            }
+            if (!which || which & 2) {
+                console.log('x2 : ' + res[1])
+                $scope.variables.x2.slider.max = Math.round(res[1])
+            }
+            if (!which || which & 4) {
+                console.log('x3 : ' + res[2])
+                $scope.variables.x3.slider.max = Math.round(res[2])
+            }
+            if (!which || which & 8) {
+                $scope.variables.z.value = Math.round(res[3])
+                console.log('z : ' + res[3])
+            }
             console.log('checkbox : ' + checkboxValue)
             console.log('city : ' + $scope.variables.city.percent)
             console.log('c1 : ' + $scope.variables.c1.value)
             console.log('c2 : ' + $scope.variables.c2.value)
             console.log('c3 : ' + $scope.variables.c3.value)
-            console.log('x1 : ' + res[0])
-            console.log('x2 : ' + res[1])
-            console.log('x3 : ' + res[2])
+            console.log('c4 : ' + $scope.variables.c4.value)
             console.log('limits : ' + limits.x1 + " " + limits.x2 + " " + limits.x3)
-            console.log('z : ' + res[3])
+            console.log('res : ' + res)
             console.log('---------------------')
         }
 
@@ -368,42 +377,50 @@ angular.module('frontApp')
                 $scope.variables.lta.value = Math.min($scope.variables.lta.slider.max, $scope.variables.lta.value);
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
-            } else if (key == "x2") {
-                limits.x2 = $scope.variables.x2.value
-                if (method == $scope.constants.raw && salaryChange) {
-                    console.log("x2if")
-                    $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
-                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
-                    hraChange = false;
-                } else {
-                    console.log("x2else")
-                    hraChange = true;
-                    $scope.variables.c4.hide = true;
-                    $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool)
-                    $scope.variables.x3.value = $scope.variables.x3.slider.max;
-                    $scope.variables.x1.value = $scope.variables.x1.slider.max;
-                }
             } else if (key == "x1") {
                 limits.x1 = $scope.variables.x1.value
-                if (method == $scope.constants.raw && hraChange) {
-                    console.log("x1if")
+                var which = constants.total - constants.x1;
+                which -= limits.x2 ? constants.x2 : 0;
+                which -= limits.x3 ? constants.x3 : 0;
+                if (limits.x2) {
                     $scope.variables.c4.hide = false;
                     $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
-                    findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
                     salaryChange = false;
+                    findUnknowns(onesixsevenfivebool, which)
                 } else {
-                    console.log("x1else")
+                    findUnknowns(onesixsevenfivebool, which)
                     $scope.variables.c4.hide = true;
                     $scope.variables.c4.value = 0;
-                    findUnknowns(onesixsevenfivebool)
                     $scope.variables.x3.value = $scope.variables.x3.slider.max;
                     $scope.variables.x2.value = $scope.variables.x2.slider.max;
                     salaryChange = true;
                 }
+            } else if (key == "x2") {
+                limits.x2 = $scope.variables.x2.value
+                var which = constants.total - constants.x2;
+                which -= limits.x1 ? constants.x1 : 0;
+                which -= limits.x3 ? constants.x3 : 0;
+                findUnknowns(onesixsevenfivebool, which)
+                if (limits.x1) {
+                    $scope.variables.c4.hide = false;
+                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
+                    hraChange = false;
+                    findUnknowns(onesixsevenfivebool, which)
+                } else {
+                    findUnknowns(onesixsevenfivebool, which)
+                    hraChange = true;
+                    $scope.variables.c4.hide = true;
+                    $scope.variables.c4.value = 0;
+                    $scope.variables.x3.value = $scope.variables.x3.slider.max;
+                    $scope.variables.x1.value = $scope.variables.x1.slider.max;
+                }
+
             } else if (key == "x3") {
                 limits.x3 = $scope.variables.x3.value
+                var which = constants.total - constants.x3;
+                which -= limits.x1 ? constants.x1 : 0;
+                which -= limits.x2 ? constants.x2 : 0;
+                findUnknowns(onesixsevenfivebool, which)
             }
 
             if (!(key == "x1" || key == "x2" || key == "x3")) {
@@ -412,12 +429,12 @@ angular.module('frontApp')
                     x2: 0,
                     x3: 0
                 }
-                findUnknowns($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide)
+                findUnknowns(onesixsevenfivebool)
                 $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 $scope.variables.x3.value = $scope.variables.x3.slider.max;
             } else {
-                $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent * $scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value - 0.1 * $scope.variables.x1.value), 0))
+                // $scope.variables.z.value = Math.round(Math.max(Math.min($scope.variables.city.percent * $scope.variables.x1.value, $scope.variables.x2.value, $scope.variables.x3.value - 0.1 * $scope.variables.x1.value), 0))
             }
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             if (optimise(false)[0] >= 180000 && $scope.variables.x1.value >= 180000) {
