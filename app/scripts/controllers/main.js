@@ -16,6 +16,7 @@ angular.module('frontApp')
             "x3": 4,
             "total": 15,
         };
+        console.log($scope.constants)
         var constants = $scope.constants;
         var salaryChange = false;
         var hraChange = false;
