@@ -495,8 +495,8 @@ angular.module('frontApp')
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
                 "\nOthers : " + $scope.variables.c4.value +
-                "\nCA amount : " + ($scope.variables.ca.value - 19200);
-            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200) + $scope.variables.c4.value);
+                "\nCA amount : " + (0/*$scope.variables.ca.value - 19200*/);
+            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0/*$scope.variables.ca.value - 19200*/) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 $scope.variables.taxable.description += "\nPF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ) +
                     "\nESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ );
