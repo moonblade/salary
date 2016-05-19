@@ -342,6 +342,7 @@ angular.module('frontApp')
         setMaxLTA();
         window.scope = $scope // to access scope variables and debug in console
         var lastLTA;
+        var nohra;
         $scope.find = function(key, variable, method) {
             // console.log(key + " " + method + " " + hraChange + " " + salaryChange)
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
@@ -355,14 +356,20 @@ angular.module('frontApp')
                 $scope.variables.ca.value = $scope.variables.ca.slider.max;
             } else if (key == "residence") {
                 $scope.variables.residence.value = $scope.variables.residence.selector.value;
-                if ($scope.variables.residence.value == "Owned") {
+                nohra = $scope.variables.residence.value == "Owned";
+                if (nohra) {
                     $scope.variables.z.hide = true;
+                    $scope.variables.z.value = 0;
                     $scope.variables.x3.hide = true;
-                    // $scope.variables.x2.hide = true;
+                    $scope.variables.x3.value = 0;
+                    $scope.variables.x2.hide = true;
+                    $scope.variables.x2.value = 0;
+                    $scope.variables.x1.value = Math.round($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value);
                 } else {
                     $scope.variables.z.hide = false;
                     $scope.variables.x3.hide = false;
-                    // $scope.variables.x2.hide = false;
+                    $scope.variables.x2.hide = false;
+                    findUnknowns(onesixsevenfivebool);
                 }
             } else if (key == "city") {
                 $scope.variables.city.value = $scope.variables.city.selector.value;
@@ -381,26 +388,34 @@ angular.module('frontApp')
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
             } else if (key == "x1") {
-                limits.x1 = $scope.variables.x1.value
-                var which = constants.total - constants.x1;
-                which -= limits.x2 ? constants.x2 : 0;
-                which -= limits.x3 ? constants.x3 : 0;
-                if (limits.x2) {
-                    $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
-                    salaryChange = false;
-                    if($scope.variables.c4.value==0){
-                    	which+=constants.x2;
-                    	limits.x2=0;
+                if (!nohra) {
+                    limits.x1 = $scope.variables.x1.value
+                    var which = constants.total - constants.x1;
+                    which -= limits.x2 ? constants.x2 : 0;
+                    which -= limits.x3 ? constants.x3 : 0;
+                    if (limits.x2) {
+                        $scope.variables.c4.hide = false;
+                        $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
+                        salaryChange = false;
+                        if ($scope.variables.c4.value == 0) {
+                            which += constants.x2;
+                            limits.x2 = 0;
+                        }
+                        findUnknowns(onesixsevenfivebool, which)
+                    } else {
+                        findUnknowns(onesixsevenfivebool, which)
+                        $scope.variables.c4.hide = true;
+                        $scope.variables.c4.value = 0;
+                        $scope.variables.x3.value = $scope.variables.x3.slider.max;
+                        $scope.variables.x2.value = $scope.variables.x2.slider.max;
+                        salaryChange = true;
                     }
-                    findUnknowns(onesixsevenfivebool, which)
-                } else {
-                    findUnknowns(onesixsevenfivebool, which)
-                    $scope.variables.c4.hide = true;
-                    $scope.variables.c4.value = 0;
-                    $scope.variables.x3.value = $scope.variables.x3.slider.max;
-                    $scope.variables.x2.value = $scope.variables.x2.slider.max;
-                    salaryChange = true;
+                }
+                else
+                {
+                	$scope.variables.x2.value=0;
+                	$scope.variables.x3.value=0;
+                	$scope.variables.z.value=0;
                 }
             } else if (key == "x2") {
                 limits.x2 = $scope.variables.x2.value
@@ -411,10 +426,11 @@ angular.module('frontApp')
                 if (limits.x1) {
                     $scope.variables.c4.hide = false;
                     $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
-                    if($scope.variables.c4.value==0){
-                    	which+=constants.x1;
-                    	limits.x1=0;
-                    }hraChange = false;
+                    if ($scope.variables.c4.value == 0) {
+                        which += constants.x1;
+                        limits.x1 = 0;
+                    }
+                    hraChange = false;
                     findUnknowns(onesixsevenfivebool, which)
                 } else {
                     findUnknowns(onesixsevenfivebool, which)
@@ -482,9 +498,9 @@ angular.module('frontApp')
                 "\nCA amount : " + ($scope.variables.ca.value - 19200);
             $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + ($scope.variables.ca.value - 19200) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
-                $scope.variables.taxable.description += "\nPF amount : " + (0/*-$scope.variables.pfesi.pfvalue*/) +
-                    "\nESI amount : " + (0/*-$scope.variables.pfesi.esivalue*/);
-                $scope.variables.taxable.value -= Math.round(0/*$scope.variables.pfesi.pfvalue*/ + 0/*$scope.variables.pfesi.esivalue*/);
+                $scope.variables.taxable.description += "\nPF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ) +
+                    "\nESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ );
+                $scope.variables.taxable.value -= Math.round(0 /*$scope.variables.pfesi.pfvalue*/ + 0 /*$scope.variables.pfesi.esivalue*/ );
             }
             $scope.variables.tax.value = getTax($scope.variables.taxable.value);
             $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.taxable.value);
