@@ -355,7 +355,7 @@ angular.module('frontApp')
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
                 $scope.variables.ca.value = $scope.variables.ca.slider.max;
                 $scope.variables.meal.slider.max = Math.round(50*241/12*$scope.variables.months.value);
-                $scope.variables.meal.value = Math.min($scope.variables.meal.slider.max,$scope.variables.meal.value);
+                $scope.variables.meal.value = $scope.variables.meal.slider.max;d
             } else if (key == "residence") {
                 $scope.variables.residence.value = $scope.variables.residence.selector.value;
                 nohra = $scope.variables.residence.value == "Owned";
@@ -491,14 +491,14 @@ angular.module('frontApp')
             $scope.variables.taxable.description = "Basic Salary : " + $scope.variables.x1.value +
                 "\nCEA : " + ($scope.variables.cea.value - $scope.variables.cea.value) +
                 "\nMedical Allowance : " + ($scope.variables.ma.value - 15000) +
-                "\nMeal Allowance : " + ($scope.variables.meal.value - 12050) +
+                "\nMeal Allowance : " + ($scope.variables.meal.value - $scope.variables.meal.slider.max) +
                 "\nHRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0) +
                 "\nLTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max) +
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
                 "\nOthers : " + $scope.variables.c4.value +
                 "\nCA amount : " + (0/*$scope.variables.ca.value - 19200*/);
-            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - 12050 + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0/*$scope.variables.ca.value - 19200*/) + $scope.variables.c4.value);
+            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0/*$scope.variables.ca.value - 19200*/) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 $scope.variables.taxable.description += "\nPF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ) +
                     "\nESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ );
