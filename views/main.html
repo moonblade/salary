@@ -17,12 +17,12 @@
                 <pre ng-if="variable.description">{{variable.description}}</pre>
                 <md-input-container ng-if="variable.selector" style="width: 100%">
                     <label>{{variable.selector.prompt}}</label>
-                    <md-select ng-change=find(key,variable) ng-model="variable.selector.value" placeholder="{{variable.selector.prompt}}">
+                    <md-select ng-change="find(key,variable)" ng-model="variable.selector.value" placeholder="{{variable.selector.prompt}}">
                         <md-option ng-value="opt.value" ng-repeat="opt in variable.selector.options">{{ opt.text }}</md-option>
                     </md-select>
                 </md-input-container>
                 <md-slider ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" ng-change="find(key,variable)" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
-                <md-checkbox ng-change=find(key,variable) ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
+                <md-checkbox ng-change="find(key,variable)" ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
                     {{variable.checkbox.prompt}}
                 </md-checkbox>
             </md-card-content>
