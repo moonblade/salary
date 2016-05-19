@@ -383,7 +383,7 @@ angular.module('frontApp')
                 which -= limits.x3 ? constants.x3 : 0;
                 if (limits.x2) {
                     $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
+                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive* $scope.variables.c3.value - onesixsevenfive* $scope.variables.x1.value - $scope.variables.x2.value;
                     salaryChange = false;
                     findUnknowns(onesixsevenfivebool, which)
                 } else {
@@ -402,7 +402,7 @@ angular.module('frontApp')
                 findUnknowns(onesixsevenfivebool, which)
                 if (limits.x1) {
                     $scope.variables.c4.hide = false;
-                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c3.value - $scope.variables.x1.value - $scope.variables.x2.value;
+                    $scope.variables.c4.value = $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive* $scope.variables.c3.value - onesixsevenfive* $scope.variables.x1.value - $scope.variables.x2.value;
                     hraChange = false;
                     findUnknowns(onesixsevenfivebool, which)
                 } else {
