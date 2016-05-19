@@ -275,7 +275,7 @@ angular.module('frontApp')
                 m = (money - 500000) * .2 + 25000
             else if (money > 250000)
                 m = (money - 250000) * .1 - 2000
-            return m > 0 ? Math.round(m) : 0
+            return m > 0 ? Math.round(m*1.03) : 0
         }
         var optimise = function(onesixsevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
