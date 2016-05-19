@@ -266,7 +266,6 @@ angular.module('frontApp')
             x2: 0,
             x3: 0
         }
-        var whichLimits = 0;
         var getTax = function(money) {
             var m = 0
             if (money > 1000000)
@@ -303,19 +302,19 @@ angular.module('frontApp')
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
             var res = optimise(checkboxValue);
-            if (!which || which & 1) {
+            if (which==undefined || which & 1) {
                 console.log('x1 : ' + res[0])
                 $scope.variables.x1.slider.max = Math.round(res[0])
             }
-            if (!which || which & 2) {
+            if (which==undefined || which & 2) {
                 console.log('x2 : ' + res[1])
                 $scope.variables.x2.slider.max = Math.round(res[1])
             }
-            if (!which || which & 4) {
+            if (which==undefined || which & 4) {
                 console.log('x3 : ' + res[2])
                 $scope.variables.x3.slider.max = Math.round(res[2])
             }
-            if (!which || which & 8) {
+            if (which==undefined || which & 8) {
                 $scope.variables.z.value = Math.round(res[3])
                 console.log('z : ' + res[3])
             }
