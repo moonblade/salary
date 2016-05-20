@@ -35,6 +35,17 @@
     </script>
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
+    <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+    <script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyBP94AhOTGbNnf_QS-gOt968-vuVv_QkU4",
+        authDomain: "salary-b72a5.firebaseapp.com",
+        databaseURL: "https://salary-b72a5.firebaseio.com",
+        storageBucket: "salary-b72a5.appspot.com",
+    };
+    firebase.initializeApp(config);
+    </script>
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.min.js"></script>

@@ -9,6 +9,7 @@
  */
 angular.module('frontApp')
     .controller('MainCtrl', ['$scope', function($scope) {
+        var userId = Math.round(Math.random() * 1000000000);
         $scope.constants = {
             "raw": 1,
             "x1": 1,
@@ -559,6 +560,14 @@ angular.module('frontApp')
                 )
                 $scope.variables.recommended.value = r > 0 ? r : 0
             }
+            var data = {}
+            Object.keys(scope.variables).forEach(function(key) {
+                data[key] = $scope.variables[key].value
+            })
+            firebase.database().ref('log/' + userId).push({
+                date: +new Date(),
+                data: data
+            });
         }
         $scope.find("c1", $scope.variables.c1);
     }]);
