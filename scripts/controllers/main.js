@@ -259,6 +259,11 @@ angular.module('frontApp')
                 "name": "Tax Saved",
                 "value": 0
             },
+            "recommended": {
+                name: "Recommended Tax Investment",
+                value: 0,
+                hideIfNegative: true
+            }
 
         }
 
@@ -274,8 +279,8 @@ angular.module('frontApp')
             else if (money > 500000)
                 m = (money - 500000) * .2 + 25000
             else if (money > 250000)
-                m = (money - 250000) * .1 - 2000
-            return m > 0 ? Math.round(m*1.03) : 0
+                m = (money - 250000) * .1 - 5000
+            return m > 0 ? Math.round(m * 1.03) : 0
         }
         var optimise = function(onesixsevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
@@ -354,7 +359,7 @@ angular.module('frontApp')
             } else if (key == "months") {
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
                 $scope.variables.ca.value = $scope.variables.ca.slider.max;
-                $scope.variables.meal.slider.max = Math.round(50*241/12*$scope.variables.months.value);
+                $scope.variables.meal.slider.max = Math.round(50 * 241 / 12 * $scope.variables.months.value);
                 $scope.variables.meal.value = $scope.variables.meal.slider.max;
             } else if (key == "residence") {
                 $scope.variables.residence.value = $scope.variables.residence.selector.value;
@@ -412,12 +417,10 @@ angular.module('frontApp')
                         $scope.variables.x2.value = $scope.variables.x2.slider.max;
                         salaryChange = true;
                     }
-                }
-                else
-                {
-                	$scope.variables.x2.value=0;
-                	$scope.variables.x3.value=0;
-                	$scope.variables.z.value=0;
+                } else {
+                    $scope.variables.x2.value = 0;
+                    $scope.variables.x3.value = 0;
+                    $scope.variables.z.value = 0;
                 }
             } else if (key == "x2") {
                 limits.x2 = $scope.variables.x2.value
@@ -497,8 +500,8 @@ angular.module('frontApp')
                 "\nDA amount : " + $scope.variables.da.value +
                 "\nFC amount : " + $scope.variables.fc.value +
                 "\nOthers : " + $scope.variables.c4.value +
-                "\nCA amount : " + (0/*$scope.variables.ca.value - 19200*/);
-            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0/*$scope.variables.ca.value - 19200*/) + $scope.variables.c4.value);
+                "\nCA amount : " + (0 /*$scope.variables.ca.value - 19200*/ );
+            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0 /*$scope.variables.ca.value - 19200*/ ) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 $scope.variables.taxable.description += "\nPF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ) +
                     "\nESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ );
@@ -510,6 +513,10 @@ angular.module('frontApp')
                 $scope.variables.saveTax.hide = false;
             else
                 $scope.variables.saveTax.hide = true;
+            $scope.variables.recommended.value = Math.min(
+                $scope.variables.taxable.value > 500000 ? $scope.variables.taxable.value - 250000 : $scope.variables.taxable.value - 300000,
+                200000
+            )
         }
         $scope.find("c1", $scope.variables.c1);
     }]);
