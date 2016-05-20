@@ -587,7 +587,7 @@ angular.module('frontApp')
             var data = "Instant Salary Tax Saver Report" +
                 "\nCofidential" +
                 "\n\nMost Tax Efficient way to Structure your Salary :-" +
-                "\nIncome Description,Amount(in Rs)\n" +
+                "\nIncome Description,Amount(Rs)\n" +
                 "\nBasic Salary," + $scope.variables.x1.value +
                 "\nMedical Reimbursement," + $scope.variables.ma.value +
                 "\nFood coupons," + $scope.variables.meal.value +
@@ -603,6 +603,21 @@ angular.module('frontApp')
                 "\nTaxable salary," + $scope.variables.nettax.value +
                 "\nTax Due," + $scope.variables.tax.value +
                 "\nTotal Tax savings," + $scope.variables.saveTax.value +
+
+                "\n\n\nRecommended Tax investments,Amount(Rs)" +
+                "\nInvestments u/s 80C" +
+                "\nEmployee's Provident Fund," + $scope.variables.pfesi.value +
+                "\nTuition Fees" +
+                "\nLife Insurance Premium" +
+                "\nEquity Mutual Funds" +
+                "\nHome Loan Principal Repayment" +
+                "\nPublic Provident Fund(PPF)" +
+                "\n5 Year Fixed Deposit with Bank" +
+                "\n5 Years Post Office Deposit" +
+                "\nNational Pension Scheme" +
+                "\nSection 80D -Mediclaim Premium ( Family Members)," + $scope.variables.ma.value +
+                "\nTotal (Max)," + $scope.variables.recommended.value +
+
                 "\n\n\nTax Hero OPC" +
                 "\nCopyright Reserved 2016";
 
