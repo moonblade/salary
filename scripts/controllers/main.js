@@ -175,7 +175,7 @@ angular.module('frontApp')
                 }
             },
             "fc": {
-                "name": "Variable income based on sales",
+                "name": "Variable income (sales incentive)",
                 "input": true,
                 "value": 0,
                 "slider": {
@@ -529,7 +529,7 @@ angular.module('frontApp')
                 "HRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0),
                 "Vacation travelling Sponsorship (LTA) : " + Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0),
                 "DA amount : " + $scope.variables.da.value,
-                "Variable income on sales : " + $scope.variables.fc.value,
+                "Variable income (sales incentive) : " + $scope.variables.fc.value,
                 "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200),
                 "Others : " + $scope.variables.c4.value
             ];
