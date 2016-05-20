@@ -581,4 +581,32 @@ angular.module('frontApp')
                 data: data
             });
         }
+
+        $scope.downloadCSV = function() {
+
+            var data = "Item,Amount";
+
+            Object.keys(scope.variables).forEach(function(key) {
+                data += '\n' + $scope.variables[key].name + ',' + $scope.variables[key].value
+            })
+
+            $('<a></a>')
+                .attr('href', 'data:application/csv;charset=utf8,' + encodeURIComponent(data))
+                .attr('download', 'filename.csv')
+                .attr('id', 'downloadFile')
+                .html('')
+                .appendTo('body');
+
+            $('#downloadFile').ready(function() {
+                $('#downloadFile')
+                    .get(0)
+                    .click();
+            });
+
+        }
+
+        $scope.downloadPDF = function(){
+            alert('not ready yet')
+        }
+
     }]);

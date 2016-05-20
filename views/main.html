@@ -55,3 +55,18 @@
         </md-card>
     </div>
 </div>
+<md-card ng-if="email">
+    <md-card-header>
+        <md-card-header-text class="layout-row">
+            <div class="flex-100">
+                <div class="md-title" style="text-align: center;">Download As</div>
+            </div>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <md-content style="text-align: center;">
+            <md-button class="md-raised md-primary" ng-click="downloadPDF()">PDF</md-button>
+            <md-button class="md-raised md-primary" ng-click="downloadCSV()">CSV</md-button>
+        </md-content>
+    </md-card-content>
+</md-card>
