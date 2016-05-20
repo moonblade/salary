@@ -379,7 +379,7 @@ angular.module('frontApp')
                     $scope.variables.x3.value = 0;
                     $scope.variables.x2.hide = true;
                     $scope.variables.x2.value = 0;
-                    $scope.variables.x1.value = Math.round($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value);
+                    $scope.variables.x1.value = Math.round(($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value) / onesixsevenfive);
                 } else {
                     $scope.variables.z.hide = false;
                     $scope.variables.x3.hide = false;
