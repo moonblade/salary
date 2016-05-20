@@ -314,6 +314,10 @@ angular.module('frontApp')
 
 
         var findUnknowns = function(checkboxValue, which) {
+            $scope.variables.residence.value = $scope.variables.residence.selector.value;
+            nohra = $scope.variables.residence.value == "Owned";
+            if (nohra)
+                return
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
             var res = optimise(checkboxValue);
@@ -379,7 +383,10 @@ angular.module('frontApp')
                     $scope.variables.x3.value = 0;
                     $scope.variables.x2.hide = true;
                     $scope.variables.x2.value = 0;
-                    $scope.variables.x1.value = Math.round(($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value) / onesixsevenfive);
+                    $scope.variables.x1.slider.max = Math.round(($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value) / onesixsevenfive);
+                    $scope.variables.x1.slider.value = $scope.variables.x1.slider.max;
+                    $scope.variables.x2.value = 0;
+                    $scope.variables.z.value = 0;
                 } else {
                     $scope.variables.z.hide = false;
                     $scope.variables.x3.hide = false;
@@ -469,6 +476,10 @@ angular.module('frontApp')
                     x3: 0
                 }
                 findUnknowns(onesixsevenfivebool)
+                $scope.variables.residence.value = $scope.variables.residence.selector.value;
+                nohra = $scope.variables.residence.value == "Owned";
+                if(nohra)
+                    $scope.variables.x1.slider.max = Math.round(($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value) / onesixsevenfive);
                 $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 $scope.variables.x2.value = $scope.variables.x2.slider.max;
                 $scope.variables.x3.value = $scope.variables.x3.slider.max;
@@ -510,6 +521,12 @@ angular.module('frontApp')
                 "Others : " + $scope.variables.c4.value,
                 "CA amount : " + (0 /*$scope.variables.ca.value - 19200*/ )
             ];
+
+            if ($scope.variables.residence.value == "Owned") {
+                $scope.variables.x2.value = 0;
+                $scope.variables.x3.value = 0;
+                $scope.variables.z.value = 0;
+            }
             $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0 /*$scope.variables.ca.value - 19200*/ ) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 var m = ["PF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ),
