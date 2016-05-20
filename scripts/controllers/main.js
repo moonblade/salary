@@ -44,7 +44,7 @@ angular.module('frontApp')
                 }
             },
             "residence": {
-                "name": "Residance",
+                "name": "Residence",
                 "value": "Rental",
                 "selector": {
                     "prompt": "Type of residence",
@@ -59,7 +59,7 @@ angular.module('frontApp')
                 }
             },
             "city": {
-                "name": "City of Residance",
+                "name": "City of Residence",
                 "value": "Mumbai",
                 "percent": 0.5,
                 "selector": {
@@ -84,7 +84,7 @@ angular.module('frontApp')
                 }
             },
             "ma": {
-                "name": "Medical Allowance",
+                "name": "Medical Re-imbursements",
                 "description": "Exception can be claimed on production of bills of expenses of dependent parents",
                 "input": true,
                 "value": 15000,
@@ -95,17 +95,17 @@ angular.module('frontApp')
                 }
             },
             "meal": {
-                "name": "Meal Allowance",
+                "name": "Food Coupons",
                 "input": true,
                 "value": 12050,
                 "slider": {
-                    "min": 0,
+                    "min": 0, 
                     "max": 12050,
                     "step": 50
                 }
             },
             "cea": {
-                "name": "CEA",
+                "name": "Children Education Sponsorship",
                 "input": true,
                 "value": 0,
                 "selector": {
@@ -124,7 +124,7 @@ angular.module('frontApp')
                 }
             },
             "lta": {
-                "name": "LTA",
+                "name": "Vacation travelling sponsorship(LTA)",
                 "input": true,
                 "value": 0,
                 "slider": {
@@ -292,7 +292,7 @@ angular.module('frontApp')
             return m > 0 ? Math.round(m * 1.03) : 0
         }
         window.getTax = getTax
-        var optimise = function(onesixsevenfive) {
+        var optimise = function(onesixsresidevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
             if (limits.x1) {
@@ -512,15 +512,15 @@ angular.module('frontApp')
             }
 
             $scope.variables.taxable.multiline = ["Basic Salary : " + $scope.variables.x1.value,
-                "CEA : " + ($scope.variables.cea.value - $scope.variables.cea.value),
-                "Medical Allowance : " + Math.max($scope.variables.ma.value - 15000, 0),
-                "Meal Allowance : " + Math.max($scope.variables.meal.value - $scope.variables.meal.slider.max, 0),
+                "Children Education Sponsorship : " + ($scope.variables.cea.value - $scope.variables.cea.value),
+                "Medical Re-imbursements : " + Math.max($scope.variables.ma.value - 15000, 0),
+                "Food Coupons : " + Math.max($scope.variables.meal.value - $scope.variables.meal.slider.max, 0),
                 "HRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0),
-                "LTA amount : " + Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0),
+                "Vacation travelling Sponsorship (LTA) : " + Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0),
                 "DA amount : " + $scope.variables.da.value,
                 "FC amount : " + $scope.variables.fc.value,
-                "Others : " + $scope.variables.c4.value,
-                "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200)
+                "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200),
+                "Others : " + $scope.variables.c4.value
             ];
 
             if ($scope.variables.residence.value == "Owned") {
