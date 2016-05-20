@@ -349,12 +349,11 @@ angular.module('frontApp')
         var lastLTA;
         var nohra;
         $scope.find = function(key, variable, method) {
-            // console.log(key + " " + method + " " + hraChange + " " + salaryChange)
+            $scope.variables.taxable.multiline = []
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
             var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.1675 : 1;
             if (key == "c1") {
                 setMaxLTA();
-
                 $scope.variables.lta.value = Math.round(Math.min((10.7 * variable.value * 5) / (100 * 12), $scope.variables.lta.slider.max));
             } else if (key == "months") {
                 $scope.variables.ca.slider.max = $scope.variables.months.value * 1600;
@@ -491,20 +490,23 @@ angular.module('frontApp')
                 $scope.variables.pfesi.checkbox.value = false;
             }
 
-            $scope.variables.taxable.description = "Basic Salary : " + $scope.variables.x1.value +
-                "\nCEA : " + ($scope.variables.cea.value - $scope.variables.cea.value) +
-                "\nMedical Allowance : " + ($scope.variables.ma.value - 15000) +
-                "\nMeal Allowance : " + ($scope.variables.meal.value - $scope.variables.meal.slider.max) +
-                "\nHRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0) +
-                "\nLTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max) +
-                "\nDA amount : " + $scope.variables.da.value +
-                "\nFC amount : " + $scope.variables.fc.value +
-                "\nOthers : " + $scope.variables.c4.value +
-                "\nCA amount : " + (0 /*$scope.variables.ca.value - 19200*/ );
+            $scope.variables.taxable.multiline = ["Basic Salary : " + $scope.variables.x1.value,
+                "CEA : " + ($scope.variables.cea.value - $scope.variables.cea.value),
+                "Medical Allowance : " + ($scope.variables.ma.value - 15000),
+                "Meal Allowance : " + ($scope.variables.meal.value - $scope.variables.meal.slider.max),
+                "HRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0),
+                "LTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max),
+                "DA amount : " + $scope.variables.da.value,
+                "FC amount : " + $scope.variables.fc.value,
+                "Others : " + $scope.variables.c4.value,
+                "CA amount : " + (0 /*$scope.variables.ca.value - 19200*/ )
+            ];
             $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0 /*$scope.variables.ca.value - 19200*/ ) + $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
-                $scope.variables.taxable.description += "\nPF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ) +
-                    "\nESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ );
+                var m = ["PF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ),
+                    "ESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ )
+                ]
+                $scope.variables.taxable.multiline = $scope.variables.taxable.multiline.concat(m)
                 $scope.variables.taxable.value -= Math.round(0 /*$scope.variables.pfesi.pfvalue*/ + 0 /*$scope.variables.pfesi.esivalue*/ );
             }
             $scope.variables.tax.value = getTax($scope.variables.taxable.value);

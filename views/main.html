@@ -14,7 +14,12 @@
                 </md-card-header-text>
             </md-card-header>
             <md-card-content>
-                <pre ng-if="variable.description">{{variable.description}}</pre>
+                <md-content ng-if="variable.description">
+                    <p>{{variable.description}}</p>
+                </md-content>
+                <md-content ng-if="variable.multiline">
+                    <p ng-repeat="line in variable.multiline">{{line}}</p>
+                </md-content>
                 <md-input-container ng-if="variable.selector" style="width: 100%">
                     <label>{{variable.selector.prompt}}</label>
                     <md-select ng-change="find(key,variable)" ng-model="variable.selector.value" placeholder="{{variable.selector.prompt}}">
