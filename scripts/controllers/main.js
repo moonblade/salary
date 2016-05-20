@@ -46,6 +46,7 @@ angular.module('frontApp')
             "residence": {
                 "name": "Residence",
                 "value": "Rental",
+                description: "You can even pay rent to your parents/relatives",
                 "selector": {
                     "prompt": "Type of residence",
                     "value": "Rental",
@@ -85,7 +86,8 @@ angular.module('frontApp')
             },
             "ma": {
                 "name": "Medical Re-imbursements",
-                "description": "Exception can be claimed on production of bills of expenses of dependent parents",
+                // "description": "Exception can be claimed on production of bills of expenses of dependent parents",
+                "description": "Medical bills of any of the close family member can be claimed",
                 "input": true,
                 "value": 15000,
                 "slider": {
@@ -125,6 +127,7 @@ angular.module('frontApp')
             },
             "lta": {
                 "name": "Vacation travelling sponsorship(LTA)",
+                description: "Travelling fare bills should be presented to employer",
                 "input": true,
                 "value": 0,
                 "slider": {
