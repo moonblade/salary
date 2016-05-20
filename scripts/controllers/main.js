@@ -596,7 +596,7 @@ angular.module('frontApp')
                 "\nConveyance Allowance," + $scope.variables.ca.value +
                 "\nDearness Allowance," + $scope.variables.da.value +
                 "\nHouse Rent Allowance," + $scope.variables.x2.value +
-                "\nVariable (sales incentive)," + $scope.variables.fc.value +
+                "\nVariable Income (sales incentive)," + $scope.variables.fc.value +
                 "\nTOTAL CTC," + $scope.variables.c1.value +
                 "\nLess: Exemptions from Income Tax," + ($scope.variables.c1.value - $scope.variables.taxable.value) +
                 "\nLess: Recommended Tax Investments ," + $scope.variables.recommended.value +
@@ -622,7 +622,56 @@ angular.module('frontApp')
         }
 
         $scope.downloadPDF = function() {
-            alert('not ready yet')
-        }
+            var columns = [
+                { title: "Income Description", dataKey: "income" },
+                { title: "Amount (in Rs)", dataKey: "amount" }
+            ];
+            var data = [
+                ["Basic Salary", $scope.variables.x1.value],
+                ["Medical Reimbursement", $scope.variables.ma.value],
+                ["Food coupons", $scope.variables.meal.value],
+                ["Children Education fees sponsorship", $scope.variables.cea.value],
+                ["Vacation Travelling Fare sponsorship", $scope.variables.lta.value],
+                ["Conveyance Allowance", $scope.variables.ca.value],
+                ["Dearness Allowance", $scope.variables.da.value],
+                ["House Rent Allowance", $scope.variables.x2.value],
+                ["Variable Income (sales incentive)", $scope.variables.fc.value],
+                ["TOTAL CTC", $scope.variables.c1.value],
+                ["Less: Exemptions from Income Tax", ($scope.variables.c1.value - $scope.variables.taxable.value)],
+                ["Less: Recommended Tax Investments ", $scope.variables.recommended.value],
+                ["Taxable salary", $scope.variables.nettax.value],
+                ["Tax Due", $scope.variables.tax.value],
+                ["Total Tax savings", $scope.variables.saveTax.value]
+            ];
 
+            console.log(data)
+
+            var rows = []
+            data.forEach(function(d) {
+                rows.push({
+                    income: d[0],
+                    amount: d[1]
+                })
+            })
+
+            // Only pt supported (not mm or in)
+            var doc = new jsPDF('p', 'pt');
+            doc.autoTable(columns, rows, {
+                theme: 'grid',
+                margin: { top: 110 },
+                beforePageContent: function(data) {
+                    doc.setFontSize(22);
+                    doc.text("Instant Salary Tax Saver Report", 150, 30);
+                    doc.setFontSize(13);
+                    doc.text("Confidential", 40, 50)
+                    doc.setFontSize(16);
+                    doc.text("Most Tax Efficient way to Structure your Salary :-", 40, 90)
+                },
+                afterPageContent: function(data) {
+                    doc.text("Tax Hero OPC", 40, 480);
+                    doc.text("Copyright Reserved 2016", 40, 510);
+                }
+            });
+            doc.save('table.pdf');
+        }
     }]);
