@@ -8,7 +8,7 @@
  * Controller of the frontApp
  */
 angular.module('frontApp')
-    .controller('MainCtrl', ['$scope', function($scope) {
+    .controller('MainCtrl', ['$scope', '$mdDialog', function($scope, $mdDialog) {
         var userId = Math.round(Math.random() * 1000000000);
         $scope.constants = {
             "raw": 1,
@@ -99,7 +99,7 @@ angular.module('frontApp')
                 "input": true,
                 "value": 12050,
                 "slider": {
-                    "min": 0, 
+                    "min": 0,
                     "max": 12050,
                     "step": 50
                 }
@@ -292,7 +292,12 @@ angular.module('frontApp')
             return m > 0 ? Math.round(m * 1.03) : 0
         }
         window.getTax = getTax
-        var optimise = function(onesixsresidevenfive) {
+
+        do {
+            var email = prompt("Enter Email Address");
+        } while (email == null || email == "");
+
+        var optimise = function(onesixsevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
             if (limits.x1) {
@@ -564,7 +569,8 @@ angular.module('frontApp')
             Object.keys(scope.variables).forEach(function(key) {
                 data[key] = $scope.variables[key].value
             })
-            firebase.database().ref('log/' + userId).push({
+            firebase.database().ref('log/' + email).push({
+                sessionId: userId,
                 date: +new Date(),
                 data: data
             });
