@@ -478,7 +478,7 @@ angular.module('frontApp')
                 findUnknowns(onesixsevenfivebool)
                 $scope.variables.residence.value = $scope.variables.residence.selector.value;
                 nohra = $scope.variables.residence.value == "Owned";
-                if(nohra)
+                if (nohra)
                     $scope.variables.x1.slider.max = Math.round(($scope.variables.c1.value - onesixsevenfive * $scope.variables.c3.value - $scope.variables.c2.value) / onesixsevenfive);
                 $scope.variables.x1.value = $scope.variables.x1.slider.max;
                 $scope.variables.x2.value = $scope.variables.x2.slider.max;
@@ -512,14 +512,14 @@ angular.module('frontApp')
 
             $scope.variables.taxable.multiline = ["Basic Salary : " + $scope.variables.x1.value,
                 "CEA : " + ($scope.variables.cea.value - $scope.variables.cea.value),
-                "Medical Allowance : " + ($scope.variables.ma.value - 15000),
-                "Meal Allowance : " + ($scope.variables.meal.value - $scope.variables.meal.slider.max),
+                "Medical Allowance : " + Math.max($scope.variables.ma.value - 15000, 0),
+                "Meal Allowance : " + Math.max($scope.variables.meal.value - $scope.variables.meal.slider.max, 0),
                 "HRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0),
-                "LTA amount : " + ($scope.variables.lta.value - $scope.variables.lta.slider.max),
+                "LTA amount : " + Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0),
                 "DA amount : " + $scope.variables.da.value,
                 "FC amount : " + $scope.variables.fc.value,
                 "Others : " + $scope.variables.c4.value,
-                "CA amount : " + (0 /*$scope.variables.ca.value - 19200*/ )
+                "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200)
             ];
 
             if ($scope.variables.residence.value == "Owned") {
@@ -527,7 +527,17 @@ angular.module('frontApp')
                 $scope.variables.x3.value = 0;
                 $scope.variables.z.value = 0;
             }
-            $scope.variables.taxable.value = Math.round($scope.variables.x1.value + $scope.variables.cea.value - $scope.variables.cea.value + $scope.variables.ma.value - 15000 + $scope.variables.meal.value - $scope.variables.meal.slider.max + $scope.variables.x2.value - $scope.variables.z.value + $scope.variables.lta.value - $scope.variables.lta.slider.max + $scope.variables.da.value + $scope.variables.fc.value + (0 /*$scope.variables.ca.value - 19200*/ ) + $scope.variables.c4.value);
+            $scope.variables.taxable.value = Math.round(
+                $scope.variables.x1.value +
+                Math.max($scope.variables.ma.value - 15000, 0) +
+                Math.max($scope.variables.meal.value - $scope.variables.meal.slider.max, 0) +
+                $scope.variables.x2.value -
+                $scope.variables.z.value +
+                Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0) +
+                $scope.variables.da.value +
+                $scope.variables.fc.value +
+                (0 /*$scope.variables.ca.value - 19200*/ ) +
+                $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 var m = ["PF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ),
                     "ESI amount : " + (0 /*-$scope.variables.pfesi.esivalue*/ )
