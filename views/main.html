@@ -1,4 +1,25 @@
-<div ng-repeat="(key, variable) in variables">
+<md-card ng-if="!email">
+    <md-card-header>
+        <md-card-header-text class="layout-row">
+            <div class="flex-100">
+                <div class="md-title" style="text-align: center;">Enter Email Address to continue</div>
+            </div>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <md-content style="text-align: center;">
+            <form ng-submit="setEmail(emailTemp)">
+                <md-input-container>
+                    <label>Email Address</label>
+                    <input type="email" ng-model="emailTemp">
+                </md-input-container>
+                <br/>
+                <md-button class="md-raised md-primary" ng-click="setEmail(emailTemp)">Continue</md-button>
+            </form>
+        </md-content>
+    </md-card-content>
+</md-card>
+<div ng-repeat="(key, variable) in variables" ng-if="email">
     <div ng-if="!variable.hide&&!(variable.hideIfNegative&&variable.value<=0)">
         <md-card>
             <md-card-header>

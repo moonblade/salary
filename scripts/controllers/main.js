@@ -306,10 +306,6 @@ angular.module('frontApp')
         }
         window.getTax = getTax
 
-        do {
-            var email = prompt("Enter Email Address");
-        } while (email == null || email == "");
-
         var optimise = function(onesixsevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
@@ -380,6 +376,13 @@ angular.module('frontApp')
         window.scope = $scope // to access scope variables and debug in console
         var lastLTA;
         var nohra;
+        $scope.email = ''
+        $scope.setEmail = function(email) {
+            if (!email) return;
+            $scope.email = email;
+            console.log("email : " + email)
+            $scope.find("c1", $scope.variables.c1);
+        }
         $scope.find = function(key, variable, method) {
             $scope.variables.taxable.multiline = []
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
@@ -584,11 +587,10 @@ angular.module('frontApp')
             Object.keys(scope.variables).forEach(function(key) {
                 data[key] = $scope.variables[key].value
             })
-            firebase.database().ref('log/' + email).push({
-                sessionId: userId,
+            firebase.database().ref('log/' + userId).push({
+                email: $scope.email,
                 date: +new Date(),
                 data: data
             });
         }
-        $scope.find("c1", $scope.variables.c1);
     }]);
