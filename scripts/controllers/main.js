@@ -248,7 +248,21 @@ angular.module('frontApp')
                 "value": 0
             },
             "taxable": {
-                "name": "Taxable Income",
+                "name": "Gross Taxable Income",
+                "value": 0
+            },
+            "recommended": {
+                name: "Recommended Tax Investment",
+                value: 200000,
+                input: true,
+                "slider": {
+                    "min": 0,
+                    "max": 200000,
+                    "step": 1000
+                }
+            },
+            "nettax": {
+                "name": "Net Taxable Income",
                 "value": 0
             },
             "tax": {
@@ -258,13 +272,7 @@ angular.module('frontApp')
             "saveTax": {
                 "name": "Tax Saved",
                 "value": 0
-            },
-            "recommended": {
-                name: "Recommended Tax Investment",
-                value: 0,
-                hideIfNegative: true
             }
-
         }
 
         var limits = {
@@ -282,6 +290,7 @@ angular.module('frontApp')
                 m = (money - 250000) * .1 - 5000
             return m > 0 ? Math.round(m * 1.03) : 0
         }
+        window.getTax = getTax
         var optimise = function(onesixsevenfive) {
             var multiplier = onesixsevenfive ? 1.1675 : 1;
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
@@ -509,16 +518,20 @@ angular.module('frontApp')
                 $scope.variables.taxable.multiline = $scope.variables.taxable.multiline.concat(m)
                 $scope.variables.taxable.value -= Math.round(0 /*$scope.variables.pfesi.pfvalue*/ + 0 /*$scope.variables.pfesi.esivalue*/ );
             }
-            $scope.variables.tax.value = getTax($scope.variables.taxable.value);
-            $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.taxable.value);
+            $scope.variables.nettax.value = $scope.variables.taxable.value - $scope.variables.recommended.value
+            $scope.variables.tax.value = getTax($scope.variables.nettax.value);
+            $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.nettax.value);
             if ($scope.variables.saveTax.value > 0)
                 $scope.variables.saveTax.hide = false;
             else
                 $scope.variables.saveTax.hide = true;
-            $scope.variables.recommended.value = Math.min(
-                $scope.variables.taxable.value > 500000 ? $scope.variables.taxable.value - 250000 : $scope.variables.taxable.value - 300000,
-                200000
-            )
+            if (key != "recommended") {
+                var r = Math.min(
+                    $scope.variables.taxable.value > 500000 ? $scope.variables.taxable.value - 250000 : $scope.variables.taxable.value - 300000,
+                    200000
+                )
+                $scope.variables.recommended.value = r > 0 ? r : 0
+            }
         }
         $scope.find("c1", $scope.variables.c1);
     }]);
