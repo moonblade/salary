@@ -181,6 +181,16 @@ angular.module('frontApp')
                     "step": 1000
                 }
             },
+            evi: {
+                name: "Estimated Variable Income",
+                value: 0,
+                input: true,
+                slider: {
+                    min: 0,
+                    max: 10000000,
+                    step: 1000
+                }
+            },
             "c2": {
                 "name": "Constant 2",
                 "hide": true,
@@ -325,7 +335,7 @@ angular.module('frontApp')
             if (nohra)
                 return
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
-            $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
+            $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value + $scope.variables.evi.value;
             var res = optimise(checkboxValue);
             if (which == undefined || which & 1) {
                 $scope.variables.x1.slider.max = Math.round(res[0])
@@ -525,6 +535,7 @@ angular.module('frontApp')
                 "DA amount : " + $scope.variables.da.value,
                 "FC amount : " + $scope.variables.fc.value,
                 "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200),
+                "Estimated Variable Income : " + $scope.variables.evi.value,
                 "Others : " + $scope.variables.c4.value
             ];
 
@@ -543,6 +554,7 @@ angular.module('frontApp')
                 $scope.variables.da.value +
                 $scope.variables.fc.value +
                 (0 /*$scope.variables.ca.value - 19200*/ ) +
+                $scope.variables.evi.value +
                 $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 var m = ["PF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ),
