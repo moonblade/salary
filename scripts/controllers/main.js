@@ -584,11 +584,27 @@ angular.module('frontApp')
 
         $scope.downloadCSV = function() {
 
-            var data = "Item,Amount";
-
-            Object.keys(scope.variables).forEach(function(key) {
-                data += '\n' + $scope.variables[key].name + ',' + $scope.variables[key].value
-            })
+            var data = "Instant Salary Tax Saver Report" +
+                "\nCofidential" +
+                "\n\nMost Tax Efficient way to Structure your Salary :-" +
+                "\nIncome Description,Amount(in Rs)\n" +
+                "\nBasic Salary," + $scope.variables.x1.value +
+                "\nMedical Reimbursement," + $scope.variables.ma.value +
+                "\nFood coupons," + $scope.variables.meal.value +
+                "\nChildren Education fees sponsorship," + $scope.variables.cea.value +
+                "\nVacation Travelling Fare sponsorship," + $scope.variables.lta.value +
+                "\nConveyance Allowance," + $scope.variables.ca.value +
+                "\nDearness Allowance," + $scope.variables.da.value +
+                "\nHouse Rent Allowance," + $scope.variables.x2.value +
+                "\nVariable (sales incentive)," + $scope.variables.fc.value +
+                "\nTOTAL CTC," + $scope.variables.c1.value +
+                "\nLess: Exemptions from Income Tax," + ($scope.variables.c1.value - $scope.variables.taxable.value) +
+                "\nLess: Recommended Tax Investments ," + $scope.variables.recommended.value +
+                "\nTaxable salary," + $scope.variables.nettax.value +
+                "\nTax Due," + $scope.variables.tax.value +
+                "\nTotal Tax savings," + $scope.variables.saveTax.value +
+                "\n\n\nTax Hero OPC" +
+                "\nCopyright Reserved 2016";
 
             $('<a></a>')
                 .attr('href', 'data:application/csv;charset=utf8,' + encodeURIComponent(data))
@@ -605,7 +621,7 @@ angular.module('frontApp')
 
         }
 
-        $scope.downloadPDF = function(){
+        $scope.downloadPDF = function() {
             alert('not ready yet')
         }
 
