@@ -597,8 +597,8 @@ angular.module('frontApp')
                 "\nChildren Education fees sponsorship," + $scope.variables.cea.value +
                 "\nVacation Travelling Fare sponsorship," + $scope.variables.lta.value +
                 "\nConveyance Allowance," + $scope.variables.ca.value +
-                "\nProvident fund(PF)," + $scope.variables.pfesi.pfvalue +
-                "\nEmployee State Insurance (ESI)," + $scope.variables.pfesi.esivalue +
+                "\nProvident fund(PF)," + $scope.variables.pfesi.value>0?$scope.variables.pfesi.pfvalue:0 +
+                "\nEmployee State Insurance (ESI)," + $scope.variables.pfesi.value>0?$scope.variables.pfesi.esivalue:0 +
                 "\nDearness Allowance," + $scope.variables.da.value +
                 "\nHouse Rent Allowance," + $scope.variables.x2.value +
                 "\nVariable Income (sales incentive)," + $scope.variables.fc.value +
@@ -658,8 +658,8 @@ angular.module('frontApp')
                 ["Children Education fees sponsorship", $scope.variables.cea.value],
                 ["Vacation Travelling Fare sponsorship", $scope.variables.lta.value],
                 ["Conveyance Allowance", $scope.variables.ca.value],
-                ["Provident fund(PF)",$scope.variables.pfesi.pfvalue],
-                ["Employee State Insurance (ESI)",$scope.variables.pfesi.esivalue],
+                ["Provident fund(PF)",$scope.variables.pfesi.value>0?$scope.variables.pfesi.pfvalue:0],
+                ["Employee State Insurance (ESI)",$scope.variables.pfesi.value>0?$scope.variables.pfesi.esivalue:0],
                 ["Dearness Allowance", $scope.variables.da.value],
                 ["House Rent Allowance", $scope.variables.x2.value],
                 ["Variable Income (sales incentive)", $scope.variables.fc.value],
