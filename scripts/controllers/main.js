@@ -528,7 +528,7 @@ angular.module('frontApp')
                 "Food Coupons : " + Math.max($scope.variables.meal.value - $scope.variables.meal.slider.max, 0),
                 "HRA amount : " + ($scope.variables.residence.value != "Owned" ? ($scope.variables.x2.value - $scope.variables.z.value) : 0),
                 "Vacation travelling Sponsorship (LTA) : " + Math.max($scope.variables.lta.value - $scope.variables.lta.slider.max, 0),
-                "PF and ESI : " + Math.max($scope.variables.pfesi.value - 150000, 0),
+                // "PF and ESI : " + Math.max($scope.variables.pfesi.value - 150000, 0),
                 "DA amount : " + $scope.variables.da.value,
                 "Variable income (sales incentive) : " + $scope.variables.fc.value,
                 "CA amount : " + Math.max(0, $scope.variables.ca.value - 19200),
@@ -550,7 +550,7 @@ angular.module('frontApp')
                 $scope.variables.da.value +
                 $scope.variables.fc.value +
                 (0 /*$scope.variables.ca.value - 19200*/ ) +
-                Math.max($scope.variables.pfesi.value - 150000, 0) +
+                // Math.max($scope.variables.pfesi.value - 150000, 0) +
                 $scope.variables.c4.value);
             if ($scope.variables.pfesi.checkbox.value && !$scope.variables.pfesi.hide) {
                 var m = ["PF amount : " + (0 /*-$scope.variables.pfesi.pfvalue*/ ),
@@ -608,7 +608,7 @@ angular.module('frontApp')
 
                 "\n\n\nRecommended Tax investments,Amount(Rs)" +
                 "\nInvestments u/s 80C" +
-                "\nEmployee's Provident Fund," + $scope.variables.pfesi.value +
+                "\nEmployee's Provident Fund," + Math.min($scope.variables.pfesi.pfvalue, 150000) +
                 "\nTuition Fees" +
                 "\nLife Insurance Premium" +
                 "\nEquity Mutual Funds" +
@@ -634,6 +634,7 @@ angular.module('frontApp')
                 $('#downloadFile')
                     .get(0)
                     .click();
+                $('#downloadFile').remove()
             });
 
         }
@@ -694,7 +695,7 @@ angular.module('frontApp')
 
             var data = [
                 ["Investments u/s 80C", ""],
-                ["Employee's Provident Fund", $scope.variables.pfesi.value],
+                ["Employee's Provident Fund", Math.min($scope.variables.pfesi.pfvalue, 150000)],
                 ["Tuition Fees", ""],
                 ["Life Insurance Premium ", ""],
                 ["Equity Mutual Funds", ""],
