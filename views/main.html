@@ -48,7 +48,7 @@
                     </md-select>
                 </md-input-container>
                 <md-slider ng-if="variable.slider" ng-model="variable.value" min="{{variable.slider.min}}" ng-change="find(key,variable)" max="{{variable.slider.max}}" aria-label="variable.name" step="{{variable.slider.step}}"></md-slider>
-                <md-checkbox ng-change="find(key,variable)" ng-if="variable.checkbox" ng-model="variable.checkbox.value" aria-label="variable.checkbox.prompt">
+                <md-checkbox ng-change="find(key,variable)" ng-if="variable.checkbox" ng-model="variable.checkbox.value" ng-disabled="variable.checkbox.disabled" aria-label="variable.checkbox.prompt">
                     {{variable.checkbox.prompt}}
                 </md-checkbox>
             </md-card-content>

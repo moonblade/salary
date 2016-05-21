@@ -236,8 +236,9 @@ angular.module('frontApp')
                 "pfvalue": 0,
                 "esivalue": 0,
                 "input": true,
-                "hide": true,
+                "hide": false,
                 "checkbox": {
+                    "disabled" : true,
                     "prompt": "Deduct pf and esi?",
                     "value": true
                 }
@@ -502,13 +503,14 @@ angular.module('frontApp')
             $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             if (optimise(false)[0] >= 180000 && $scope.variables.x1.value >= 180000) {
                 // console.log('in psi')
-                $scope.variables.pfesi.hide = false;
-                if (flag) {
+                // $scope.variables.pfesi.hide = false;
+                $scope.variables.pfesi.checkbox.disabled = false;
+                 if (flag) {
                     $scope.variables.pfesi.checkbox.value = true;
                     flag = false;
                 }
                 if ($scope.variables.pfesi.checkbox.value) {
-                    $scope.variables.pfesi.pfvalue = 12 * Math.round($scope.variables.x1.value / 100);
+                    $scope.variables.pfesi.pfvalue = Math.round(12 * $scope.variables.x1.value / 100);
                     $scope.variables.pfesi.esivalue = Math.round(4.75 * $scope.variables.x1.value / 100);
                     $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
                     $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
@@ -516,11 +518,14 @@ angular.module('frontApp')
                     $scope.variables.pfesi.description = "PF : " + 0 + ", ESI : " + 0;
                     $scope.variables.pfesi.value = 0;
                 }
-                // findUnknowns($scope.variables.pfesi.checkbox.value)
             } else {
                 flag = true;
-                $scope.variables.pfesi.hide = true;
-                $scope.variables.pfesi.checkbox.value = false;
+                $scope.variables.pfesi.checkbox.value = true;
+                $scope.variables.pfesi.checkbox.disabled = true;
+                $scope.variables.pfesi.pfvalue = Math.round(12 * $scope.variables.x1.value / 100);
+                $scope.variables.pfesi.esivalue = Math.round(4.75 * $scope.variables.x1.value / 100);
+                $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
+                $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
             }
 
             $scope.variables.taxable.multiline = ["Basic Salary : " + $scope.variables.x1.value,
@@ -597,8 +602,8 @@ angular.module('frontApp')
                 "\nChildren Education fees sponsorship," + $scope.variables.cea.value +
                 "\nVacation Travelling Fare sponsorship," + $scope.variables.lta.value +
                 "\nConveyance Allowance," + $scope.variables.ca.value +
-                "\nProvident fund(PF)," + $scope.variables.pfesi.value>0?$scope.variables.pfesi.pfvalue:0 +
-                "\nEmployee State Insurance (ESI)," + $scope.variables.pfesi.value>0?$scope.variables.pfesi.esivalue:0 +
+                "\nProvident fund(PF)," + $scope.variables.pfesi.value > 0 ? $scope.variables.pfesi.pfvalue : 0 +
+                "\nEmployee State Insurance (ESI)," + $scope.variables.pfesi.value > 0 ? $scope.variables.pfesi.esivalue : 0 +
                 "\nDearness Allowance," + $scope.variables.da.value +
                 "\nHouse Rent Allowance," + $scope.variables.x2.value +
                 "\nVariable Income (sales incentive)," + $scope.variables.fc.value +
@@ -658,8 +663,8 @@ angular.module('frontApp')
                 ["Children Education fees sponsorship", $scope.variables.cea.value],
                 ["Vacation Travelling Fare sponsorship", $scope.variables.lta.value],
                 ["Conveyance Allowance", $scope.variables.ca.value],
-                ["Provident fund(PF)",$scope.variables.pfesi.value>0?$scope.variables.pfesi.pfvalue:0],
-                ["Employee State Insurance (ESI)",$scope.variables.pfesi.value>0?$scope.variables.pfesi.esivalue:0],
+                ["Provident fund(PF)", $scope.variables.pfesi.value > 0 ? $scope.variables.pfesi.pfvalue : 0],
+                ["Employee State Insurance (ESI)", $scope.variables.pfesi.value > 0 ? $scope.variables.pfesi.esivalue : 0],
                 ["Dearness Allowance", $scope.variables.da.value],
                 ["House Rent Allowance", $scope.variables.x2.value],
                 ["Variable Income (sales incentive)", $scope.variables.fc.value],
@@ -697,7 +702,7 @@ angular.module('frontApp')
                     doc.text("Most Tax Efficient way to Structure your Salary :-", 40, 90)
                 },
                 afterPageContent: function(data) {
-                    doc.text("Recommended Rent to be Paid : " +$scope.variables.x3.value, 50, doc.autoTableEndPosY() + 10);
+                    doc.text("Recommended Rent to be Paid : " + $scope.variables.x3.value, 50, doc.autoTableEndPosY() + 10);
                 }
             });
 
