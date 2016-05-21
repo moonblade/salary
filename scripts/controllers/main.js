@@ -619,7 +619,7 @@ angular.module('frontApp')
 
                 "\n\n\nRecommended Tax investments,Amount(Rs)" +
                 "\nInvestments u/s 80C" +
-                "\nEmployee's Provident Fund," + Math.min($scope.variables.pfesi.pfvalue, 150000) +
+                "\nEmployee's Provident Fund," + ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):0) +
                 "\nTuition Fees" +
                 "\nLife Insurance Premium" +
                 "\nEquity Mutual Funds" +
@@ -719,7 +719,7 @@ angular.module('frontApp')
 
             var data = [
                 ["Investments u/s 80C", ""],
-                ["Employee's Provident Fund", Math.min($scope.variables.pfesi.pfvalue, 150000)],
+                ["Employee's Provident Fund", ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):0)],
                 ["Tuition Fees", ""],
                 ["Life Insurance Premium ", ""],
                 ["Equity Mutual Funds", ""],
