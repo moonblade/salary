@@ -358,7 +358,7 @@ angular.module('frontApp')
 
         var setMaxLTA = function() {
             if ($scope.variables.c1.value > 600000)
-                $scope.variables.lta.slider.max = 20000 * $scope.variables.lta.selector.value;
+                $scope.variables.lta.slider.max = 19950 * $scope.variables.lta.selector.value;
             else
                 $scope.variables.lta.slider.max = 7550 * $scope.variables.lta.selector.value;
         }
@@ -421,6 +421,7 @@ angular.module('frontApp')
                 $scope.variables.lta.value = Math.min($scope.variables.lta.slider.max, $scope.variables.lta.value);
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
+                $scope.variables.lta.selector.value = $scope.variables.cea.selector.value > 0 ? $scope.variables.cea.selector.value + 2 : 1;
             } else if (key == "x1") {
                 if (!nohra) {
                     limits.x1 = $scope.variables.x1.value
@@ -605,6 +606,7 @@ angular.module('frontApp')
                 "\nTaxable salary," + $scope.variables.nettax.value +
                 "\nTax Due," + $scope.variables.tax.value +
                 "\nTotal Tax savings," + $scope.variables.saveTax.value +
+                "\nRecommended Rent to be Paid," + $scope.variables.x3.value +
 
                 "\n\n\nRecommended Tax investments,Amount(Rs)" +
                 "\nInvestments u/s 80C" +
@@ -640,10 +642,13 @@ angular.module('frontApp')
         }
 
         $scope.downloadPDF = function() {
-            var columns = [
-                { title: "Income Description", dataKey: "income" },
-                { title: "Amount (in Rs)", dataKey: "amount" }
-            ];
+            var columns = [{
+                title: "Income Description",
+                dataKey: "income"
+            }, {
+                title: "Amount (in Rs)",
+                dataKey: "amount"
+            }];
             var data = [
                 ["Basic Salary", $scope.variables.x1.value],
                 ["Medical Reimbursement", $scope.variables.ma.value],
@@ -676,7 +681,9 @@ angular.module('frontApp')
             var doc = new jsPDF('p', 'pt');
             doc.autoTable(columns, rows, {
                 theme: 'grid',
-                margin: { top: 110 },
+                margin: {
+                    top: 110
+                },
                 beforePageContent: function(data) {
                     doc.setFontSize(22);
                     doc.text("Instant Salary Tax Saver Report", 150, 30);
@@ -684,13 +691,19 @@ angular.module('frontApp')
                     doc.text("Confidential", 40, 50)
                     doc.setFontSize(16);
                     doc.text("Most Tax Efficient way to Structure your Salary :-", 40, 90)
+                },
+                afterPageContent: function(data) {
+                    doc.text("Recommended Rent to be Paid : " +$scope.variables.x3.value, 50, doc.autoTableEndPosY() + 10);
                 }
             });
 
-            var columns = [
-                { title: "Recommended Tax Investments", dataKey: "recommended" },
-                { title: "Amount (Rs)", dataKey: "amount" }
-            ];
+            var columns = [{
+                title: "Recommended Tax Investments",
+                dataKey: "recommended"
+            }, {
+                title: "Amount (Rs)",
+                dataKey: "amount"
+            }];
 
 
             var data = [
