@@ -628,7 +628,7 @@ angular.module('frontApp')
                 "\n5 Year Fixed Deposit with Bank" +
                 "\n5 Years Post Office Deposit" +
                 "\nNational Pension Scheme" +
-                "\nSection 80D -Mediclaim Premium ( Family Members)," + $scope.variables.ma.value +
+                "\nSection 80D -Mediclaim Premium ( Family Members)," + ($scope.variables.taxable>300000?$scope.variables.ma.value:"") +
                 "\nTotal (Max)," + $scope.variables.recommended.value +
 
                 "\n\n\nTax Hero OPC" +
@@ -728,7 +728,7 @@ angular.module('frontApp')
                 ["5 Year Fixed Deposit with Bank", ""],
                 ["5 Years Post Office Deposit", ""],
                 ["National Pension Scheme", ""],
-                ["Section 80D -Mediclaim Premium ( Family Members)", $scope.variables.ma.value],
+                ["Section 80D -Mediclaim Premium ( Family Members)", ($scope.variables.taxable>300000?$scope.variables.ma.value:"")],
                 ["Total (Max)", $scope.variables.recommended.value]
             ];
 
