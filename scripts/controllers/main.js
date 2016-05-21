@@ -619,7 +619,7 @@ angular.module('frontApp')
 
                 "\n\n\nRecommended Tax investments,Amount(Rs)" +
                 "\nInvestments u/s 80C" +
-                "\nEmployee's Provident Fund," + ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):0) +
+                "\nEmployee's Provident Fund," + ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):"") +
                 "\nTuition Fees" +
                 "\nLife Insurance Premium" +
                 "\nEquity Mutual Funds" +
@@ -719,7 +719,7 @@ angular.module('frontApp')
 
             var data = [
                 ["Investments u/s 80C", ""],
-                ["Employee's Provident Fund", ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):0)],
+                ["Employee's Provident Fund", ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):"")],
                 ["Tuition Fees", ""],
                 ["Life Insurance Premium ", ""],
                 ["Equity Mutual Funds", ""],
@@ -728,7 +728,7 @@ angular.module('frontApp')
                 ["5 Year Fixed Deposit with Bank", ""],
                 ["5 Years Post Office Deposit", ""],
                 ["National Pension Scheme", ""],
-                ["Section 80D -Mediclaim Premium ( Family Members)", ($scope.variables.taxable>300000?$scope.variables.ma.value:"")],
+                ["Section 80D -Mediclaim Premium ( Family Members)", (($scope.variables.taxable>300000?$scope.variables.ma.value:"")],
                 ["Total (Max)", $scope.variables.recommended.value]
             ];
 
