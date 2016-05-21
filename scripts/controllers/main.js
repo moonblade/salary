@@ -423,6 +423,8 @@ angular.module('frontApp')
             } else if (key == "cea") {
                 $scope.variables.cea.value = $scope.variables.cea.selector.value * 1200;
                 $scope.variables.lta.selector.value = $scope.variables.cea.selector.value > 0 ? $scope.variables.cea.selector.value + 2 : 1;
+                setMaxLTA();
+                $scope.variables.lta.value = Math.round(Math.min((10.7 * $scope.variables.c1.value * 5) / (100 * 12), $scope.variables.lta.slider.max));
             } else if (key == "x1") {
                 if (!nohra) {
                     limits.x1 = $scope.variables.x1.value
