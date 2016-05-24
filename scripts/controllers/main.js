@@ -567,13 +567,7 @@ angular.module('frontApp')
                 $scope.variables.taxable.multiline = $scope.variables.taxable.multiline.concat(m)
                 $scope.variables.taxable.value -= Math.round(0 /*$scope.variables.pfesi.pfvalue*/ + 0 /*$scope.variables.pfesi.esivalue*/ );
             }
-            $scope.variables.nettax.value = $scope.variables.taxable.value - $scope.variables.recommended.value
-            $scope.variables.tax.value = getTax($scope.variables.nettax.value);
-            $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.nettax.value);
-            if ($scope.variables.saveTax.value > 0)
-                $scope.variables.saveTax.hide = false;
-            else
-                $scope.variables.saveTax.hide = true;
+            
             if (key != "recommended") {
                 var r = Math.min(
                     $scope.variables.taxable.value > 500000 ? $scope.variables.taxable.value - 250000 : $scope.variables.taxable.value - 300000,
@@ -581,6 +575,13 @@ angular.module('frontApp')
                 )
                 $scope.variables.recommended.value = r > 0 ? r : 0
             }
+            $scope.variables.nettax.value = $scope.variables.taxable.value - $scope.variables.recommended.value
+            $scope.variables.tax.value = getTax($scope.variables.nettax.value);
+            $scope.variables.saveTax.value = getTax($scope.variables.c1.value) - getTax($scope.variables.nettax.value);
+            if ($scope.variables.saveTax.value > 0)
+                $scope.variables.saveTax.hide = false;
+            else
+                $scope.variables.saveTax.hide = true;
             var data = {}
             Object.keys(scope.variables).forEach(function(key) {
                 data[key] = $scope.variables[key].value
@@ -728,7 +729,7 @@ angular.module('frontApp')
                 ["5 Year Fixed Deposit with Bank", ""],
                 ["5 Years Post Office Deposit", ""],
                 ["National Pension Scheme", ""],
-                ["Section 80D -Mediclaim Premium ( Family Members)", (($scope.variables.taxable>300000?$scope.variables.ma.value:"")],
+                ["Section 80D -Mediclaim Premium ( Family Members)", (($scope.variables.taxable>300000?$scope.variables.ma.value:""))],
                 ["Total (Max)", $scope.variables.recommended.value]
             ];
 
