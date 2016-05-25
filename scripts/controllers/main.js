@@ -238,7 +238,7 @@ angular.module('frontApp')
                 "input": true,
                 "hide": false,
                 "checkbox": {
-                    "disabled" : true,
+                    "disabled": true,
                     "prompt": "Deduct pf and esi?",
                     "value": true
                 }
@@ -507,7 +507,7 @@ angular.module('frontApp')
                 // console.log('in psi')
                 // $scope.variables.pfesi.hide = false;
                 $scope.variables.pfesi.checkbox.disabled = false;
-                 if (flag) {
+                if (flag) {
                     $scope.variables.pfesi.checkbox.value = true;
                     flag = false;
                 }
@@ -567,7 +567,7 @@ angular.module('frontApp')
                 $scope.variables.taxable.multiline = $scope.variables.taxable.multiline.concat(m)
                 $scope.variables.taxable.value -= Math.round(0 /*$scope.variables.pfesi.pfvalue*/ + 0 /*$scope.variables.pfesi.esivalue*/ );
             }
-            
+
             if (key != "recommended") {
                 var r = Math.min(
                     $scope.variables.taxable.value > 500000 ? $scope.variables.taxable.value - 250000 : $scope.variables.taxable.value - 300000,
@@ -620,7 +620,7 @@ angular.module('frontApp')
 
                 "\n\n\nRecommended Tax investments,Amount(Rs)" +
                 "\nInvestments u/s 80C" +
-                "\nEmployee's Provident Fund," + ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):"") +
+                "\nEmployee's Provident Fund," + ($scope.variables.recommended.value > 0 ? Math.min($scope.variables.pfesi.pfvalue, 150000) : "") +
                 "\nTuition Fees" +
                 "\nLife Insurance Premium" +
                 "\nEquity Mutual Funds" +
@@ -629,7 +629,7 @@ angular.module('frontApp')
                 "\n5 Year Fixed Deposit with Bank" +
                 "\n5 Years Post Office Deposit" +
                 "\nNational Pension Scheme" +
-                "\nSection 80D -Mediclaim Premium ( Family Members)," + ($scope.variables.taxable>300000?$scope.variables.ma.value:"") +
+                "\nSection 80D -Mediclaim Premium ( Family Members)," + ($scope.variables.taxable > 300000 ? $scope.variables.ma.value : "") +
                 "\nTotal (Max)," + $scope.variables.recommended.value +
 
                 "\n\n\nTax Hero OPC" +
@@ -720,7 +720,7 @@ angular.module('frontApp')
 
             var data = [
                 ["Investments u/s 80C", ""],
-                ["Employee's Provident Fund", ($scope.variables.recommended.value>0?Math.min($scope.variables.pfesi.pfvalue, 150000):"")],
+                ["Employee's Provident Fund", $scope.variables.pfesi.value > 0 ? ($scope.variables.recommended.value > 0 ? Math.min($scope.variables.pfesi.pfvalue, 150000) : "") : ''],
                 ["Tuition Fees", ""],
                 ["Life Insurance Premium ", ""],
                 ["Equity Mutual Funds", ""],
@@ -729,7 +729,7 @@ angular.module('frontApp')
                 ["5 Year Fixed Deposit with Bank", ""],
                 ["5 Years Post Office Deposit", ""],
                 ["National Pension Scheme", ""],
-                ["Section 80D -Mediclaim Premium ( Family Members)", (($scope.variables.taxable>300000?$scope.variables.ma.value:""))],
+                ["Section 80D -Mediclaim Premium ( Family Members)", (($scope.variables.taxable > 300000 ? $scope.variables.ma.value : ""))],
                 ["Total (Max)", $scope.variables.recommended.value]
             ];
 
