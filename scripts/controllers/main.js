@@ -239,7 +239,7 @@ angular.module('frontApp')
                 "hide": false,
                 "checkbox": {
                     "disabled": true,
-                    "prompt": "Deduct pf and esi?",
+                    "prompt": "Deduct pf?",
                     "value": true
                 }
             },
@@ -298,7 +298,8 @@ angular.module('frontApp')
         window.getTax = getTax
 
         var optimise = function(onesixsevenfive) {
-            var multiplier = onesixsevenfive ? 1.1675 : 1;
+            var multiplier = onesixsevenfive ? $scope.onesixsevenfive : 1;
+            console.log('multiplier', multiplier)
             var solver = new BigM(BigM.MAXIMIZE, [0, 0, 0, 1]);
             if (limits.x1) {
                 solver.addConstraint([1, 0, 0, 0], BigM.GREATER_OR_EQUAL_THAN, limits.x1);
@@ -377,7 +378,14 @@ angular.module('frontApp')
         $scope.find = function(key, variable, method) {
             $scope.variables.taxable.multiline = []
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
-            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.1675 : 1;
+            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.12 : 1;
+            if (optimise(false)[0] <= 180000){
+                onesixsevenfive = 1.1675
+                onesixsevenfivebool = true
+            }
+            $scope.onesixsevenfive = onesixsevenfive
+            console.log('one', onesixsevenfive)
+            console.log('one', onesixsevenfivebool)
             if (key == "c1") {
                 setMaxLTA();
                 $scope.variables.lta.value = Math.round(Math.min((10.7 * variable.value * 5) / (100 * 12), $scope.variables.lta.slider.max));
@@ -513,7 +521,7 @@ angular.module('frontApp')
                 }
                 if ($scope.variables.pfesi.checkbox.value) {
                     $scope.variables.pfesi.pfvalue = Math.round(12 * $scope.variables.x1.value / 100);
-                    $scope.variables.pfesi.esivalue = Math.round(4.75 * $scope.variables.x1.value / 100);
+                    $scope.variables.pfesi.esivalue = 0 //Math.round(4.75 * $scope.variables.x1.value / 100);
                     $scope.variables.pfesi.value = $scope.variables.pfesi.pfvalue + $scope.variables.pfesi.esivalue;
                     $scope.variables.pfesi.description = "PF : " + $scope.variables.pfesi.pfvalue + ", ESI : " + $scope.variables.pfesi.esivalue;
                 } else {
