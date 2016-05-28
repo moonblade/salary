@@ -378,14 +378,26 @@ angular.module('frontApp')
         $scope.find = function(key, variable, method) {
             $scope.variables.taxable.multiline = []
             var onesixsevenfivebool = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide);
-            var onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.12 : 1;
-            if (optimise(false)[0] <= 180000){
-                onesixsevenfive = 1.1675
-                onesixsevenfivebool = true
-            }
-            $scope.onesixsevenfive = onesixsevenfive
+            var onesixsevenfive = 0; // ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.12 : 1;
+            // if (optimise(false)[0] <= 180000) {
+            //     onesixsevenfive = 1.1675
+            //     onesixsevenfivebool = true
+            // }
+            // $scope.onesixsevenfive = onesixsevenfive
             console.log('one', onesixsevenfive)
             console.log('one', onesixsevenfivebool)
+
+            var fixMultiplier = function() {
+                onesixsevenfive = ($scope.variables.pfesi.checkbox.value || $scope.variables.pfesi.hide) ? 1.12 : 1;
+                if (optimise(false)[0] <= 180000) {
+                    onesixsevenfive = 1.1675
+                    onesixsevenfivebool = true
+                }
+                $scope.onesixsevenfive = onesixsevenfive
+                console.log('updated to ' + onesixsevenfive)
+            }
+            fixMultiplier()
+
             if (key == "c1") {
                 setMaxLTA();
                 $scope.variables.lta.value = Math.round(Math.min((10.7 * variable.value * 5) / (100 * 12), $scope.variables.lta.slider.max));
@@ -439,6 +451,7 @@ angular.module('frontApp')
                     var which = constants.total - constants.x1;
                     which -= limits.x2 ? constants.x2 : 0;
                     which -= limits.x3 ? constants.x3 : 0;
+                    fixMultiplier()
                     if (limits.x2) {
                         $scope.variables.c4.hide = false;
                         $scope.variables.c4.value = Math.round(Math.max(0, $scope.variables.c1.value - $scope.variables.c2.value - onesixsevenfive * $scope.variables.c3.value - onesixsevenfive * $scope.variables.x1.value - $scope.variables.x2.value));
@@ -466,6 +479,7 @@ angular.module('frontApp')
                 var which = constants.total - constants.x2;
                 which -= limits.x1 ? constants.x1 : 0;
                 which -= limits.x3 ? constants.x3 : 0;
+                fixMultiplier()
                 findUnknowns(onesixsevenfivebool, which)
                 if (limits.x1) {
                     $scope.variables.c4.hide = false;
@@ -490,6 +504,7 @@ angular.module('frontApp')
                 var which = constants.total - constants.x3;
                 which -= limits.x1 ? constants.x1 : 0;
                 which -= limits.x2 ? constants.x2 : 0;
+                fixMultiplier()
                 findUnknowns(onesixsevenfivebool, which)
             }
 
