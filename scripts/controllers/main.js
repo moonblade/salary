@@ -323,10 +323,11 @@ angular.module('frontApp')
         var findUnknowns = function(checkboxValue, which) {
             $scope.variables.residence.value = $scope.variables.residence.selector.value;
             nohra = $scope.variables.residence.value == "Owned";
-            if (nohra)
-                return
+            console.log('nohra : ' + nohra)
             $scope.variables.c3.value = $scope.variables.da.value + $scope.variables.fc.value
             $scope.variables.c2.value = $scope.variables.ma.value + $scope.variables.lta.value + $scope.variables.cea.value + $scope.variables.ca.value + $scope.variables.meal.value;
+            if (nohra)
+                return
             var res = optimise(checkboxValue);
             if (which == undefined || which & 1) {
                 $scope.variables.x1.slider.max = Math.round(res[0])
